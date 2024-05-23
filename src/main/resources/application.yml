@@ -1,0 +1,19 @@
+# JPA
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/togetherlion
+    username: root
+    password: 0000
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+
+coolsms:
+  api:
+    key: "NCSRKM99J3FBXIKS"
+    secret: "5IZ2E0RMGOY4WLO7GADEDAMA9E7X2ZPB"
