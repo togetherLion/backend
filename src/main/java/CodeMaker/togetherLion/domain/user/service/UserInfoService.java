@@ -1,7 +1,9 @@
 package CodeMaker.togetherLion.domain.user.service;
 
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangeInfoReq;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangePwReq;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangeInfoRes;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangePwRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,13 +49,26 @@ public class UserInfoService {
                 .account(user.getAccount())
                 .build();
     }
+
+    // 비밀번호 변경 : 지수 - 완료
+    public ChangePwRes changePw(ChangePwReq changePwReq, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        user.setPassword(changePwReq.getPassword());
+        userRepository.save(user);
+
+        return ChangePwRes.builder()
+                .password(user.getPassword())
+                .build();
+    }
     
-    // 회원 탈퇴 : 지수 - 개발 중
+    // 회원 탈퇴 : 지수 - 완료
     public String unregister(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
         
-        user.setUserState(false); // 로그인할 때 userState 확인 부분 추가
+        user.setUserState(false);
         userRepository.save(user);
 
         return "unregister";
