@@ -11,5 +11,5 @@ import lombok.Setter;
 @Builder
 public class PhoneAuthResponse {
 
-    private String phone;
+    private String auth;
 }

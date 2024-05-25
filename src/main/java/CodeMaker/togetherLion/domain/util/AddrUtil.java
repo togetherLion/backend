@@ -18,6 +18,7 @@ public class AddrUtil {
     @Value("${kakao.rest.api}")
     private String restApi;
 
+
     /**
      * 경위도 정보로 주소를 불러오는 메소드
      */
@@ -26,6 +27,48 @@ public class AddrUtil {
         String addr = "";
         try{
             addr = getRegionAddress(getJSONData(url));
+            //LOGGER.info(addr);
+        }catch(Exception e){
+            System.out.println("주소 api 요청 에러");
+            e.printStackTrace();
+        }
+        return addr;
+    }
+
+    /*
+     *  경위도 정보로 법정동 불러오는 메소드 : 지수
+     * */
+    public String coordToR1D(String longitude, String latitude) {
+        String url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+longitude+"&y="+latitude;
+        String addr = "";
+        try{
+            addr = getRegion1Depth(getJSONData(url));
+            //LOGGER.info(addr);
+        }catch(Exception e){
+            System.out.println("주소 api 요청 에러");
+            e.printStackTrace();
+        }
+        return addr;
+    }
+
+    public String coordToR2D(String longitude, String latitude) {
+        String url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+longitude+"&y="+latitude;
+        String addr = "";
+        try{
+            addr = getRegion2Depth(getJSONData(url));
+            //LOGGER.info(addr);
+        }catch(Exception e){
+            System.out.println("주소 api 요청 에러");
+            e.printStackTrace();
+        }
+        return addr;
+    }
+
+    public String coordToR3D(String longitude, String latitude) {
+        String url = "https://dapi.kakao.com/v2/local/geo/coord2address.json?x="+longitude+"&y="+latitude;
+        String addr = "";
+        try{
+            addr = getRegion3Depth(getJSONData(url));
             //LOGGER.info(addr);
         }catch(Exception e){
             System.out.println("주소 api 요청 에러");
@@ -76,6 +119,8 @@ public class AddrUtil {
             }
         }
 
+        //System.out.println(response.toString());
+
         return response.toString();
     }
 
@@ -104,6 +149,96 @@ public class AddrUtil {
                 subJobj = (JSONObject) jArray.get(1);
                 subJobj = (JSONObject) subJobj.get("address");
                 value =(String) subJobj.get("address_name");
+            }
+        }
+        return value;
+    }
+
+    /**
+     * JSON형태의 String 데이터에서 region_1depth_name(경기도)만 받아오기
+     */
+    private String getRegion1Depth(String jsonString) {
+        String value = "";
+        JSONObject jObj = (JSONObject) JSONValue.parse(jsonString);
+        JSONObject meta = (JSONObject) jObj.get("meta");
+        long size = (long) meta.get("total_count");
+
+        if(size>0){
+            JSONArray jArray = (JSONArray) jObj.get("documents");
+            JSONObject subJobj = (JSONObject) jArray.get(0);
+            JSONObject roadAddress =  (JSONObject) subJobj.get("address");
+
+            if(roadAddress == null){
+                JSONObject subsubJobj = (JSONObject) subJobj.get("road_address");
+                value = (String) subsubJobj.get("region_1depth_name");
+            }else{
+                value = (String) roadAddress.get("region_1depth_name");
+            }
+
+            if(value.equals("") || value==null){
+                subJobj = (JSONObject) jArray.get(1);
+                subJobj = (JSONObject) subJobj.get("road_address");
+                value =(String) subJobj.get("region_1depth_name");
+            }
+        }
+        return value;
+    }
+
+    /**
+     * JSON형태의 String 데이터에서 region_2depth_name(성남시 분당구)만 받아오기
+     */
+    private String getRegion2Depth(String jsonString) {
+        String value = "";
+        JSONObject jObj = (JSONObject) JSONValue.parse(jsonString);
+        JSONObject meta = (JSONObject) jObj.get("meta");
+        long size = (long) meta.get("total_count");
+
+        if(size>0){
+            JSONArray jArray = (JSONArray) jObj.get("documents");
+            JSONObject subJobj = (JSONObject) jArray.get(0);
+            JSONObject roadAddress =  (JSONObject) subJobj.get("address");
+
+            if(roadAddress == null){
+                JSONObject subsubJobj = (JSONObject) subJobj.get("road_address");
+                value = (String) subsubJobj.get("region_2depth_name");
+            }else{
+                value = (String) roadAddress.get("region_2depth_name");
+            }
+
+            if(value.equals("") || value==null){
+                subJobj = (JSONObject) jArray.get(1);
+                subJobj = (JSONObject) subJobj.get("road_address");
+                value =(String) subJobj.get("region_2depth_name");
+            }
+        }
+        return value;
+    }
+
+    /**
+     * JSON형태의 String 데이터에서 region_3depth_name(삼평동)만 받아오기
+     */
+    private String getRegion3Depth(String jsonString) {
+        String value = "";
+        JSONObject jObj = (JSONObject) JSONValue.parse(jsonString);
+        JSONObject meta = (JSONObject) jObj.get("meta");
+        long size = (long) meta.get("total_count");
+
+        if(size>0){
+            JSONArray jArray = (JSONArray) jObj.get("documents");
+            JSONObject subJobj = (JSONObject) jArray.get(0);
+            JSONObject roadAddress =  (JSONObject) subJobj.get("address");
+
+            if(roadAddress == null){
+                JSONObject subsubJobj = (JSONObject) subJobj.get("road_address");
+                value = (String) subsubJobj.get("region_3depth_name");
+            }else{
+                value = (String) roadAddress.get("region_3depth_name");
+            }
+
+            if(value.equals("") || value==null){
+                subJobj = (JSONObject) jArray.get(1);
+                subJobj = (JSONObject) subJobj.get("road_address");
+                value =(String) subJobj.get("region_3depth_name");
             }
         }
         return value;

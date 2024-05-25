@@ -7,6 +7,7 @@ import CodeMaker.togetherLion.domain.user.dto.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -31,9 +32,7 @@ public class LoginService {
                 .phone(signupRequest.getPhone())
                 .name(signupRequest.getName())
                 .nickname(signupRequest.getNickname())
-                .userAddress(addrUtil.coordToAddr(signupRequest.getUserLong(), signupRequest.getUserLat()))
-                .userLat(signupRequest.getUserLat())
-                .userLong(signupRequest.getUserLong())
+                .userAddress(signupRequest.getUserAddress())
                 .complainCount(0)
                 .loginCount(0)
                 .userState(true)
@@ -42,6 +41,18 @@ public class LoginService {
         userRepository.save(user);
 
         return new SignupResponse(user.getLoginId());
+    }
+
+    // 주소 찾기 : 지수
+    public FindAddressResponse findAddress(FindAddressRequest findAddressRequest) {
+
+        return FindAddressResponse.builder()
+                .userAddress(addrUtil.coordToAddr(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
+                .userRegion1Depth(addrUtil.coordToR1D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
+                .userRegion2Depth(addrUtil.coordToR2D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
+                .userRegion3Depth(addrUtil.coordToR3D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
+                .build();
+
     }
 
     // 비밀번호 랜덤 생성 : 지수
@@ -75,7 +86,7 @@ public class LoginService {
                 userRepository.save(user);
 
                 // 메세지 전송
-                smsUtil.sendOne(user.getPhone(), newPassword);
+                smsUtil.sendPw(user.getPhone(), newPassword);
 
                 throw new RuntimeException("랜덤 비밀번호를 전송했습니다.");
             }
@@ -116,20 +127,16 @@ public class LoginService {
                 .build();
     }
 
-    // 전화번호 인증 : 지수 - 구현 중
+    // 전화번호 인증 : 지수 - 테스트 필요
     public PhoneAuthResponse phoneAuth(PhoneAuthRequest phoneAuthRequest) {
         String auth = generateRandomPassword(8);
-        smsUtil.sendOne(phoneAuthRequest.getPhone(), auth); // SMSUtil 멘트 수정 필요
-        
+        smsUtil.sendPhoneAuth(phoneAuthRequest.getPhone(), auth); // SMSUtil 멘트 수정 필요
+
         return PhoneAuthResponse.builder()
-                .phone(phoneAuthRequest.getPhone())
+                .auth(auth)
                 .build();
     }
 
-    // 전화번호 인증 체크 : 지수 - 개발 중 -> 임시 저장 테이블 새로 파야함
-    public PhoneCheckResponse phoneCheck(PhoneCheckRequest phoneCheckRequest) {
-        return null;
-    }
 
     // 아이디 찾기 : 지수 - 완료
     public FindIdResponse findId(FindIdRequest findIdRequest) {
@@ -154,7 +161,7 @@ public class LoginService {
         user.setPassword(newPassword);
         userRepository.save(user);
 
-        smsUtil.sendOne(user.getPhone(), newPassword);
+        smsUtil.sendPw(user.getPhone(), newPassword);
 
         return FindPwResponse.builder()
                 .loginId(user.getLoginId())

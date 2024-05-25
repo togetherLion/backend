@@ -1,21 +1,19 @@
-package CodeMaker.togetherLion.domain.user.dto.request;
+package CodeMaker.togetherLion.domain.user.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-public class SignupRequest {
+@AllArgsConstructor
+@Builder
+public class ChangeInfoResponse {
 
-    private String loginId;
     private String password;
-
     private String name;
     private String nickname;
-
     private String phone;
-
     private String userAddress;
 }

@@ -19,10 +19,16 @@ public class LoginController {
 
     private final LoginService loginService;
 
-    // 회원가입 : 지수 - 전화번호 인증 기능 추가 필요
+    // 회원가입 : 지수 - 법정동 개발 후 추가, 주소 찾기 부분 분리
     @PostMapping("/signup")
     public SignupResponse signup(@RequestBody SignupRequest signupRequest) {
         return loginService.signup(signupRequest);
+    }
+
+    // 주소 찾기
+    @PostMapping("/findAddress")
+    public FindAddressResponse findAddress(@RequestBody FindAddressRequest findAddressRequest) {
+        return loginService.findAddress(findAddressRequest);
     }
 
     // 로그인 : 지수 - 완료
@@ -52,12 +58,11 @@ public class LoginController {
         return loginService.nicknameCheck(nicknameCheckRequest);
     }
 
-    // 전화번호 인증 : 지수 - 테스트 필요
-    @PostMapping PhoneAuthResponse phoneAuth(@RequestBody PhoneAuthRequest phoneAuthRequest) {
+    // 전화번호 인증 : 지수 - 테스트 필요 + 비밀번호 전송(로그인시도, 비찾)과 멘트 구분 필요 -> 테스트 필요
+    @PostMapping("/phoneAuth")
+    public PhoneAuthResponse phoneAuth(@RequestBody PhoneAuthRequest phoneAuthRequest) {
         return loginService.phoneAuth(phoneAuthRequest);
     }
-
-    // 전화번호 인증 체크 : 지수 - 개발 중
 
     // 아이디 찾기 : 지수 - 완료
     @PostMapping("/findId")
