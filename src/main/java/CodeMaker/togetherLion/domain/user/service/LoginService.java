@@ -127,10 +127,10 @@ public class LoginService {
                 .build();
     }
 
-    // 전화번호 인증 : 지수 - 테스트 필요
+    // 전화번호 인증 : 지수 - 완료
     public PhoneAuthResponse phoneAuth(PhoneAuthRequest phoneAuthRequest) {
         String auth = generateRandomPassword(8);
-        smsUtil.sendPhoneAuth(phoneAuthRequest.getPhone(), auth); // SMSUtil 멘트 수정 필요
+        smsUtil.sendPhoneAuth(phoneAuthRequest.getPhone(), auth);
 
         return PhoneAuthResponse.builder()
                 .auth(auth)
