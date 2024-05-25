@@ -1,4 +1,4 @@
-package CodeMaker.togetherLion.domain.user.dto.response;
+package CodeMaker.togetherLion.domain.user.dto.userInfo.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class ChangeInfoResponse {
+public class ChangeInfoRes {
 
-    private String password;
     private String name;
     private String nickname;
     private String phone;
     private String userAddress;
+    private String account;
 }

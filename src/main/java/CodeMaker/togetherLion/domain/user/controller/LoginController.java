@@ -1,7 +1,7 @@
 package CodeMaker.togetherLion.domain.user.controller;
 
-import CodeMaker.togetherLion.domain.user.dto.request.*;
-import CodeMaker.togetherLion.domain.user.dto.response.*;
+import CodeMaker.togetherLion.domain.user.dto.login.request.*;
+import CodeMaker.togetherLion.domain.user.dto.login.response.*;
 import CodeMaker.togetherLion.domain.user.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -21,14 +21,14 @@ public class LoginController {
 
     // 회원가입 : 지수 - 완료
     @PostMapping("/signup")
-    public SignupResponse signup(@RequestBody SignupRequest signupRequest) {
-        return loginService.signup(signupRequest);
+    public SignupRes signup(@RequestBody SignupReq signupReq) {
+        return loginService.signup(signupReq);
     }
 
     // 주소 찾기 : 지수 - 완료
     @PostMapping("/findAddress")
-    public FindAddressResponse findAddress(@RequestBody FindAddressRequest findAddressRequest) {
-        return loginService.findAddress(findAddressRequest);
+    public FindAddressRes findAddress(@RequestBody FindAddressReq findAddressReq) {
+        return loginService.findAddress(findAddressReq);
     }
 
     // 로그인 : 지수 - 완료
@@ -37,43 +37,43 @@ public class LoginController {
 //        return loginService.login(loginRequest);
 //    }
     @PostMapping("/login")
-    public LoginResponse loginResponse(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        LoginResponse loginResponse = loginService.login(loginRequest);
+    public LoginRes loginResponse(@RequestBody LoginReq loginReq, HttpServletRequest request) {
+        LoginRes loginRes = loginService.login(loginReq);
 
         HttpSession session = request.getSession(true);
-        session.setAttribute("userId", loginResponse.getLoginId());
+        session.setAttribute("userId", loginRes.getUserId());
 
-        return loginResponse;
+        return loginRes;
     }
 
     // 아이디 중복 확인 : 지수 - 완료
     @PostMapping("/idCheck")
-    public IdCheckResponse idCheck(@RequestBody IdCheckRequest idCheckRequest) {
-        return loginService.idCheck(idCheckRequest);
+    public IdCheckRes idCheck(@RequestBody IdCheckReq idCheckReq) {
+        return loginService.idCheck(idCheckReq);
     }
 
     // 닉네임 중복 확인 : 지수 - 완료
     @PostMapping("/nicknameCheck")
-    public NicknameCheckResponse nicknameCheck(@RequestBody NicknameCheckRequest nicknameCheckRequest) {
-        return loginService.nicknameCheck(nicknameCheckRequest);
+    public NicknameCheckRes nicknameCheck(@RequestBody NicknameCheckReq nicknameCheckReq) {
+        return loginService.nicknameCheck(nicknameCheckReq);
     }
 
     // 전화번호 인증 : 지수 - 완료
     @PostMapping("/phoneAuth")
-    public PhoneAuthResponse phoneAuth(@RequestBody PhoneAuthRequest phoneAuthRequest) {
-        return loginService.phoneAuth(phoneAuthRequest);
+    public PhoneAuthRes phoneAuth(@RequestBody PhoneAuthReq phoneAuthReq) {
+        return loginService.phoneAuth(phoneAuthReq);
     }
 
     // 아이디 찾기 : 지수 - 완료
     @PostMapping("/findId")
-    public FindIdResponse findId(@RequestBody FindIdRequest findIdRequest) {
-        return loginService.findId(findIdRequest);
+    public FindIdRes findId(@RequestBody FindIdReq findIdReq) {
+        return loginService.findId(findIdReq);
     }
 
     // 비밀번호 찾기 : 지수 - 완료
     @PostMapping("/findPw")
-    public FindPwResponse findPw(@RequestBody FindPwRequest findPwRequest) {
-        return loginService.findPw(findPwRequest);
+    public FindPwRes findPw(@RequestBody FindPwReq findPwReq) {
+        return loginService.findPw(findPwReq);
     }
 
     // 로그아웃 : 지수 - 완료

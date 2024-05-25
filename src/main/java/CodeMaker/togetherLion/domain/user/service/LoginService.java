@@ -1,13 +1,12 @@
 package CodeMaker.togetherLion.domain.user.service;
 
+import CodeMaker.togetherLion.domain.user.dto.login.request.*;
+import CodeMaker.togetherLion.domain.user.dto.login.response.*;
 import CodeMaker.togetherLion.domain.util.AddrUtil;
 import CodeMaker.togetherLion.domain.util.SmsUtil;
-import CodeMaker.togetherLion.domain.user.dto.request.*;
-import CodeMaker.togetherLion.domain.user.dto.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ReactiveAdapterRegistry;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -24,15 +23,15 @@ public class LoginService {
     private final SecureRandom RANDOM = new SecureRandom();
 
     // 회원가입 : 지수 - 완료
-    public SignupResponse signup(SignupRequest signupRequest) {
+    public SignupRes signup(SignupReq signupReq) {
 
         User user = User.builder()
-                .loginId(signupRequest.getLoginId())
-                .password(signupRequest.getPassword())
-                .phone(signupRequest.getPhone())
-                .name(signupRequest.getName())
-                .nickname(signupRequest.getNickname())
-                .userAddress(signupRequest.getUserAddress())
+                .loginId(signupReq.getLoginId())
+                .password(signupReq.getPassword())
+                .phone(signupReq.getPhone())
+                .name(signupReq.getName())
+                .nickname(signupReq.getNickname())
+                .userAddress(signupReq.getUserAddress())
                 .complainCount(0)
                 .loginCount(0)
                 .userState(true)
@@ -40,17 +39,17 @@ public class LoginService {
 
         userRepository.save(user);
 
-        return new SignupResponse(user.getLoginId());
+        return new SignupRes(user.getLoginId());
     }
 
     // 주소 찾기 : 지수
-    public FindAddressResponse findAddress(FindAddressRequest findAddressRequest) {
+    public FindAddressRes findAddress(FindAddressReq findAddressReq) {
 
-        return FindAddressResponse.builder()
-                .userAddress(addrUtil.coordToAddr(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
-                .userRegion1Depth(addrUtil.coordToR1D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
-                .userRegion2Depth(addrUtil.coordToR2D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
-                .userRegion3Depth(addrUtil.coordToR3D(findAddressRequest.getUserLong(), findAddressRequest.getUserLat()))
+        return FindAddressRes.builder()
+                .userAddress(addrUtil.coordToAddr(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
+                .userRegion1Depth(addrUtil.coordToR1D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
+                .userRegion2Depth(addrUtil.coordToR2D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
+                .userRegion3Depth(addrUtil.coordToR3D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
                 .build();
 
     }
@@ -66,15 +65,15 @@ public class LoginService {
     }
 
     // 로그인 : 지수 - 완료
-    public LoginResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findByLoginId(loginRequest.getLoginId())
+    public LoginRes login(LoginReq loginReq) {
+        User user = userRepository.findByLoginId(loginReq.getLoginId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
 
         if(!user.isUserState()) {
             throw new RuntimeException("제한된 사용자 입니다.");
         }
 
-        if(!user.getPassword().equals(loginRequest.getPassword())) {
+        if(!user.getPassword().equals(loginReq.getPassword())) {
 
             user.setLoginCount(user.getLoginCount() + 1);
             userRepository.save(user);
@@ -102,59 +101,60 @@ public class LoginService {
         user.setLoginCount(0);
         userRepository.save(user);
 
-        return LoginResponse.builder()
+        return LoginRes.builder()
                 .loginId(user.getLoginId())
+                .userId(user.getUserId())
                 .build();
     }
 
     // 아이디 중복 확인 : 지수 - 완료
-    public IdCheckResponse idCheck(IdCheckRequest idCheckRequest) {
-        String loginId = idCheckRequest.getLoginId();
+    public IdCheckRes idCheck(IdCheckReq idCheckReq) {
+        String loginId = idCheckReq.getLoginId();
         boolean isDuplicate = userRepository.existsByLoginId(loginId);
 
-        return IdCheckResponse.builder()
+        return IdCheckRes.builder()
                 .IdCheck(isDuplicate)
                 .build();
     }
 
     // 닉네임 중복 확인 : 지수 - 완료
-    public NicknameCheckResponse nicknameCheck(NicknameCheckRequest nicknameCheckRequest) {
-        String nickname = nicknameCheckRequest.getNickname();
+    public NicknameCheckRes nicknameCheck(NicknameCheckReq nicknameCheckReq) {
+        String nickname = nicknameCheckReq.getNickname();
         boolean isDuplicate = userRepository.existsByNickname(nickname);
 
-        return NicknameCheckResponse.builder()
+        return NicknameCheckRes.builder()
                 .nicknameCheck(isDuplicate)
                 .build();
     }
 
     // 전화번호 인증 : 지수 - 완료
-    public PhoneAuthResponse phoneAuth(PhoneAuthRequest phoneAuthRequest) {
+    public PhoneAuthRes phoneAuth(PhoneAuthReq phoneAuthReq) {
         String auth = generateRandomPassword(8);
-        smsUtil.sendPhoneAuth(phoneAuthRequest.getPhone(), auth);
+        smsUtil.sendPhoneAuth(phoneAuthReq.getPhone(), auth);
 
-        return PhoneAuthResponse.builder()
+        return PhoneAuthRes.builder()
                 .auth(auth)
                 .build();
     }
 
 
     // 아이디 찾기 : 지수 - 완료
-    public FindIdResponse findId(FindIdRequest findIdRequest) {
-        User user = userRepository.findByPhone(findIdRequest.getPhone())
+    public FindIdRes findId(FindIdReq findIdReq) {
+        User user = userRepository.findByPhone(findIdReq.getPhone())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 전화번호입니다."));
 
-        if(!user.getName().equals(findIdRequest.getName())) {
+        if(!user.getName().equals(findIdReq.getName())) {
             throw new RuntimeException("이름과 전화번호가 일치하지 않습니다.");
         }
 
-        return FindIdResponse.builder()
+        return FindIdRes.builder()
                 .loginId(user.getLoginId())
                 .build();
     }
 
     // 비밀번호 찾기 : 지수 - 완료
-    public FindPwResponse findPw(FindPwRequest findPwRequest) {
-        User user = userRepository.findByLoginId(findPwRequest.getLoginId())
+    public FindPwRes findPw(FindPwReq findPwReq) {
+        User user = userRepository.findByLoginId(findPwReq.getLoginId())
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 아이디입니다."));
 
         String newPassword = generateRandomPassword(8);
@@ -163,7 +163,7 @@ public class LoginService {
 
         smsUtil.sendPw(user.getPhone(), newPassword);
 
-        return FindPwResponse.builder()
+        return FindPwRes.builder()
                 .loginId(user.getLoginId())
                 .build();
     }

@@ -1,4 +1,4 @@
-package CodeMaker.togetherLion.domain.user.dto.response;
+package CodeMaker.togetherLion.domain.user.dto.login.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class FindIdResponse {
+public class IdCheckRes {
 
-    private String loginId;
+    private boolean IdCheck;
 }
