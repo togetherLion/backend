@@ -47,4 +47,15 @@ public class UserInfoService {
                 .account(user.getAccount())
                 .build();
     }
+    
+    // 회원 탈퇴 : 지수 - 개발 중
+    public String unregister(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+        
+        user.setUserState(false); // 로그인할 때 userState 확인 부분 추가
+        userRepository.save(user);
+
+        return "unregister";
+    }
 }
