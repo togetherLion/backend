@@ -55,7 +55,15 @@ public class UserInfoService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
 
-        user.setPassword(changePwReq.getPassword());
+        if(!user.getPassword().equals(changePwReq.getNowPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        if(user.getPassword().equals(changePwReq.getNewPassword())) {
+            throw new RuntimeException("현재 비밀번호와 일치 합니다.");
+        }
+
+        user.setPassword(changePwReq.getNewPassword());
         userRepository.save(user);
 
         return ChangePwRes.builder()

@@ -9,5 +9,6 @@ import org.springframework.stereotype.Service;
 @NoArgsConstructor
 public class ChangePwReq {
 
-    private String password;
+    private String nowPassword;
+    private String newPassword;
 }

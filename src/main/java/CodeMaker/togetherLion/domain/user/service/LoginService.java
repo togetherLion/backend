@@ -7,6 +7,7 @@ import CodeMaker.togetherLion.domain.util.SmsUtil;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -43,7 +44,7 @@ public class LoginService {
     }
 
     // 주소 찾기 : 지수
-    public FindAddressRes findAddress(FindAddressReq findAddressReq) {
+    public FindAddressRes findAddress(@NotNull FindAddressReq findAddressReq) {
 
         return FindAddressRes.builder()
                 .userAddress(addrUtil.coordToAddr(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
