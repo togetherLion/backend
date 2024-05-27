@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @Slf4j
 @AllArgsConstructor
@@ -17,10 +19,9 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<PostRes> createPost(@PathVariable Integer userId, @RequestBody PostReq postReq) {
-        Post post = postReq.toEntity();
-        Post createdPost = postService.createPost(userId, post);
+    @PostMapping("")
+    public ResponseEntity<PostRes> createPost(@RequestBody PostReq postReq, HttpServletRequest request) {
+        Post createdPost = postService.createPost(postReq, request);
         PostRes postRes = PostRes.fromEntity(createdPost);
         return ResponseEntity.ok(postRes);
     }

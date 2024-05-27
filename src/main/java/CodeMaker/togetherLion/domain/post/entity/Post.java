@@ -45,6 +45,20 @@ public class Post {
     LocalDateTime uploadDate;
 
 
+    @Builder
+    public Post(User user, String productName, String productContent, int dealNum, LocalDateTime deadlineDate, DealState dealState, int price, LocalDateTime uploadDate) {
+        this.user = user;
+        this.productName = productName;
+        this.productContent = productContent;
+        this.dealNum = dealNum;
+        this.deadlineDate = deadlineDate;
+        this.dealState = dealState;
+        this.price = price;
+        this.uploadDate = uploadDate;
+
+    }
+
+
 
 }
 

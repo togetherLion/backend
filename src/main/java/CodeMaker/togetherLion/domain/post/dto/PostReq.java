@@ -14,8 +14,10 @@ public record PostReq(
         DealState dealState,
         int price,
         LocalDateTime uploadDate
+
 ) {
-    public Post toEntity() {
+    public Post toEntity(User user) {
+        //User user = null;
         return Post.builder()
                 .productName(productName)
                 .productContent(productContent)
@@ -24,6 +26,7 @@ public record PostReq(
                 .dealState(dealState)
                 .price(price)
                 .uploadDate(uploadDate)
+                .user(user)
                 .build();
 
     }
