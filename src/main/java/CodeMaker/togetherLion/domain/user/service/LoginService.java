@@ -1,5 +1,7 @@
 package CodeMaker.togetherLion.domain.user.service;
 
+import CodeMaker.togetherLion.domain.region.entity.Region;
+import CodeMaker.togetherLion.domain.region.repository.RegionRepository;
 import CodeMaker.togetherLion.domain.user.dto.login.request.*;
 import CodeMaker.togetherLion.domain.user.dto.login.response.*;
 import CodeMaker.togetherLion.domain.util.AddrUtil;
@@ -17,6 +19,7 @@ import java.security.SecureRandom;
 public class LoginService {
 
     private final UserRepository userRepository;
+    private final RegionRepository regionRepository;
     private final SmsUtil smsUtil;
     private final AddrUtil addrUtil;
 
@@ -25,6 +28,14 @@ public class LoginService {
 
     // 회원가입 : 지수 - 완료
     public SignupRes signup(SignupReq signupReq) {
+
+        if(userRepository.existsByPhone(signupReq.getPhone())) {
+            throw new RuntimeException("이미 존재하는 전화번호 입니다.");
+        }
+
+        int regionId = findAddress(signupReq.getUserLat(), signupReq.getUserLong());
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new RuntimeException("유효하지 않은 지역 id 입니다."));
 
         User user = User.builder()
                 .loginId(signupReq.getLoginId())
@@ -36,6 +47,7 @@ public class LoginService {
                 .complainCount(0)
                 .loginCount(0)
                 .userState(true)
+                .region(region)
                 .build();
 
         userRepository.save(user);
@@ -43,17 +55,56 @@ public class LoginService {
         return new SignupRes(user.getLoginId());
     }
 
-    // 주소 찾기 : 지수
-    public FindAddressRes findAddress(@NotNull FindAddressReq findAddressReq) {
+    public int findAddress(String Lat, String Long) {
 
-        return FindAddressRes.builder()
-                .userAddress(addrUtil.coordToAddr(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
-                .userRegion1Depth(addrUtil.coordToR1D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
-                .userRegion2Depth(addrUtil.coordToR2D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
-                .userRegion3Depth(addrUtil.coordToR3D(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
-                .build();
+        String city = addrUtil.coordToR1D(Long, Lat);
+        String district = addrUtil.coordToR2D(Long, Lat);
+        String townName = addrUtil.coordToR3D(Long, Lat);
 
+        if(!(regionRepository.existsByCity(city)
+                && regionRepository.existsByDistrict(district)
+                && regionRepository.existsByTownName(townName))) {
+
+            Region region = Region.builder()
+                    .city(city)
+                    .district(district)
+                    .townName(townName)
+                    .build();
+
+            regionRepository.save(region);
+        }
+
+        return regionRepository.getRegionId(city, district, townName);
     }
+
+    // 주소 찾기 : 지수
+//    public FindAddressRes findAddress2(FindAddressReq findAddressReq) {
+//
+//        String city = addrUtil.coordToR1D(findAddressReq.getUserLong(), findAddressReq.getUserLat());
+//        String district = addrUtil.coordToR2D(findAddressReq.getUserLong(), findAddressReq.getUserLat());
+//        String townName = addrUtil.coordToR3D(findAddressReq.getUserLong(), findAddressReq.getUserLat());
+//
+//        if(!(regionRepository.existsByCity(city)
+//            && regionRepository.existsByDistrict(district)
+//            && regionRepository.existsByTownName(townName))) {
+//
+//            Region region = Region.builder()
+//                    .city(city)
+//                    .district(district)
+//                    .townName(townName)
+//                    .build();
+//
+//            regionRepository.save(region);
+//        }
+//
+//        return FindAddressRes.builder()
+//                //.userAddress(addrUtil.coordToAddr(findAddressReq.getUserLong(), findAddressReq.getUserLat()))
+//                .userRegion1Depth(city)
+//                .userRegion2Depth(district)
+//                .userRegion3Depth(townName)
+//                .build();
+//
+//    }
 
     // 비밀번호 랜덤 생성 : 지수
     public String generateRandomPassword(int length) {
@@ -130,9 +181,6 @@ public class LoginService {
 
     // 전화번호 인증 : 지수 - 완료
     public PhoneAuthRes phoneAuth(PhoneAuthReq phoneAuthReq) {
-        if(userRepository.existsByPhone(phoneAuthReq.getPhone())) {
-            throw new RuntimeException("이미 존재하는 전화번호 입니다.");
-        }
 
         String auth = generateRandomPassword(8);
         smsUtil.sendPhoneAuth(phoneAuthReq.getPhone(), auth);

@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
+import CodeMaker.togetherLion.domain.region.entity.Region;
 import lombok.*;
 
 import javax.persistence.*;
@@ -58,4 +59,8 @@ public class User {
 
     @Column
     private boolean userState; // 비활성화 여부
+
+    @ManyToOne
+    @JoinColumn(name = "regionId") // 이는 데이터베이스의 실제 외래키 컬럼명을 지정합니다.
+    private Region region;
 }

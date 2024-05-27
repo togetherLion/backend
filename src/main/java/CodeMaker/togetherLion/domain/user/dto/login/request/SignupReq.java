@@ -18,4 +18,6 @@ public class SignupReq {
     private String phone;
 
     private String userAddress;
+    private String userLat;
+    private String userLong;
 }
