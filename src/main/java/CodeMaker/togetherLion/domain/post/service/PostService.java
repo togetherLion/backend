@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.time.LocalDateTime;
 
 
 @Service
@@ -31,8 +31,18 @@ public class PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userId=" + userId));
 
-        // PostReq와 조회한 User 객체를 사용하여 Post 엔티티를 생성합니다.
-        Post post = postReq.toEntity(user);
+        LocalDateTime now = LocalDateTime.now();
+
+        Post post = Post.builder()
+                .productName(postReq.productName())
+                .productContent(postReq.productContent())
+                .dealNum(postReq.dealNum())
+                .deadlineDate(postReq.deadlineDate())
+                .dealState(postReq.dealState())
+                .price(postReq.price())
+                .uploadDate(now) // 현재 시간을 uploadDate로 설정합니다.
+                .user(user)
+                .build();
 
         // Post 엔티티를 저장합니다.
         return postRepository.save(post);

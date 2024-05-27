@@ -26,4 +26,15 @@ public class PostController {
         return ResponseEntity.ok(postRes);
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostRes> getPost(@PathVariable Integer postId) {
+        try {
+            Post post = postService.getPost(postId);
+            PostRes postRes = PostRes.fromEntity(post);
+            return ResponseEntity.ok(postRes);
+        } catch (IllegalArgumentException e) {
+            log.error("Error while fetching post: {}", e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
