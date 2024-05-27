@@ -29,10 +29,6 @@ public class LoginService {
     // 회원가입 : 지수 - 완료
     public SignupRes signup(SignupReq signupReq) {
 
-        if(userRepository.existsByPhone(signupReq.getPhone())) {
-            throw new RuntimeException("이미 존재하는 전화번호 입니다.");
-        }
-
         int regionId = findAddress(signupReq.getUserLat(), signupReq.getUserLong());
         Region region = regionRepository.findById(regionId)
                 .orElseThrow(() -> new RuntimeException("유효하지 않은 지역 id 입니다."));
@@ -181,6 +177,10 @@ public class LoginService {
 
     // 전화번호 인증 : 지수 - 완료
     public PhoneAuthRes phoneAuth(PhoneAuthReq phoneAuthReq) {
+
+        if(userRepository.existsByPhone(phoneAuthReq.getPhone())) {
+            throw new RuntimeException("이미 존재하는 전화번호 입니다.");
+        }
 
         String auth = generateRandomPassword(8);
         smsUtil.sendPhoneAuth(phoneAuthReq.getPhone(), auth);
