@@ -43,6 +43,7 @@ public class LoginService {
                 .complainCount(0)
                 .loginCount(0)
                 .userState(true)
+                .profileIntro("안녕하세요~ 반갑습니다^0^")
                 .region(region)
                 .build();
 
