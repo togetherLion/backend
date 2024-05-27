@@ -130,6 +130,10 @@ public class LoginService {
 
     // 전화번호 인증 : 지수 - 완료
     public PhoneAuthRes phoneAuth(PhoneAuthReq phoneAuthReq) {
+        if(userRepository.existsByPhone(phoneAuthReq.getPhone())) {
+            throw new RuntimeException("이미 존재하는 전화번호 입니다.");
+        }
+
         String auth = generateRandomPassword(8);
         smsUtil.sendPhoneAuth(phoneAuthReq.getPhone(), auth);
 
