@@ -3,6 +3,8 @@ package CodeMaker.togetherLion.domain.post.entity;
 import CodeMaker.togetherLion.domain.post.model.DealState;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @Setter
+@DynamicUpdate
 public class Post {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,7 +33,7 @@ public class Post {
     private String productContent;
 
     @Column
-    private int dealNum;
+    private Integer dealNum;
 
     @Column
     LocalDateTime deadlineDate;
@@ -39,14 +42,14 @@ public class Post {
     private DealState dealState;
 
     @Column
-    private int price;
+    private Integer price;
 
     @Column
     LocalDateTime uploadDate;
 
 
     @Builder
-    public Post(User user, String productName, String productContent, int dealNum, LocalDateTime deadlineDate, DealState dealState, int price, LocalDateTime uploadDate) {
+    public Post(User user, String productName, String productContent, Integer dealNum, LocalDateTime deadlineDate, DealState dealState, Integer price, LocalDateTime uploadDate) {
         this.user = user;
         this.productName = productName;
         this.productContent = productContent;
@@ -56,6 +59,14 @@ public class Post {
         this.price = price;
         this.uploadDate = uploadDate;
 
+    }
+
+    public void update(String productName, String productContent, Integer dealNum, LocalDateTime deadlineDate,  Integer price) {
+        if (productName != null) this.productName = productName;
+        if (productContent != null) this.productContent = productContent;
+        if (dealNum != null) this.dealNum = dealNum;
+        if (deadlineDate != null) this.deadlineDate = deadlineDate;
+        if (price != null) this.price = price;
     }
 
 

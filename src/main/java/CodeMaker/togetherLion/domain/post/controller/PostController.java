@@ -7,9 +7,11 @@ import CodeMaker.togetherLion.domain.post.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -26,6 +28,12 @@ public class PostController {
         return ResponseEntity.ok(postRes);
     }
 
+    @GetMapping("")
+    public ResponseEntity<?> getAllPosts() {
+        List<PostRes> posts = postService.getAllPosts();
+        return ResponseEntity.ok(posts);
+    }
+
     @GetMapping("/{postId}")
     public ResponseEntity<PostRes> getPost(@PathVariable Integer postId) {
         try {
@@ -36,5 +44,13 @@ public class PostController {
             log.error("Error while fetching post: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Transactional
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostRes> updatePost(@PathVariable Integer postId, @RequestBody PostReq postReq) {
+        Post post = postService.updatePost(postId,postReq);
+        PostRes postRes = PostRes.fromEntity(post);
+        return ResponseEntity.ok(postRes);
     }
 }

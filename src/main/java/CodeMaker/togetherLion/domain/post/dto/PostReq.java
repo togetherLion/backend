@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 public record PostReq(
         String productName,
         String productContent,
-        int dealNum,
+        Integer dealNum,
         LocalDateTime deadlineDate,
         DealState dealState,
-        int price
+        Integer price
 
 
 ) {
