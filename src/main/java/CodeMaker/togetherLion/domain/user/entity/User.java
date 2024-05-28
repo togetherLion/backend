@@ -1,9 +1,12 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
+import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -63,4 +66,7 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "regionId") // 이는 데이터베이스의 실제 외래키 컬럼명을 지정합니다.
     private Region region;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 }
