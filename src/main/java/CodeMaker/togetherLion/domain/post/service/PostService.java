@@ -7,6 +7,9 @@ import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
+import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
+import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
+import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,16 +29,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final SessionUtil sessionUtil;
+    private final WaitingDealRepository waitingDealRepository;
 
     public Post createPost(Post post, HttpServletRequest request) {
-        // 세션에서 userId를 가져옵니다.
-
 
         int userId = sessionUtil.getUserIdFromSession(request);
-        // userId를 사용하여 User 객체를 조회합니다.
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userId=" + userId));
-
         LocalDateTime now = LocalDateTime.now();
 
         User user = new User();
@@ -44,21 +42,19 @@ public class PostService {
         post.setUser(user);
         post.setUploadDate(now);
 
-//        Post post = Post.builder()
-//                .productName(postReq.productName())
-//                .productContent(postReq.productContent())
-//                .dealNum(postReq.dealNum())
-//                .deadlineDate(postReq.deadlineDate())
-//                .dealState(postReq.dealState())
-//                .price(postReq.price())
-//                .uploadDate(now) // 현재 시간을 uploadDate로 설정합니다.
-//                .user(user)
-//                .build();
+        Post savedPost = postRepository.save(post);
 
+        // WaitingDeal 엔티티 생성 및 저장
+        WaitingDeal waitingDeal = WaitingDeal.builder()
+                .user(user)
+                .post(savedPost)
+                .requestDate(now)
+                .waitingState(WaitingState.ACCEPTED)
+                .build();
 
+        waitingDealRepository.save(waitingDeal);
 
-        // Post 엔티티를 저장합니다.
-        return postRepository.save(post);
+        return savedPost;
     }
 
     public List<PostRes> getAllPosts() {

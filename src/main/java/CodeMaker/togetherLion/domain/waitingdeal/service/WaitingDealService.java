@@ -2,6 +2,7 @@ package CodeMaker.togetherLion.domain.waitingdeal.service;
 
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
+import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,13 @@ public class WaitingDealService {
 
     public WaitingDeal createWaitingDeal(WaitingDealReq waitingDealReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
+
+        // 이미 등록된 경우 체크
+        waitingDealRepository.findByUserUserIdAndPostPostId(userId, waitingDealReq.postId())
+                .ifPresent(wd -> {
+                    throw new IllegalStateException("이미 등록된 대기 거래입니다.");
+                });
+
         LocalDateTime now = LocalDateTime.now();
 
         User user = new User();
@@ -45,6 +55,13 @@ public class WaitingDealService {
                 .build();
 
         return waitingDealRepository.save(waitingDeal);
+    }
+
+    public List<UserRes> getUsersByPostIdAndWaitingState(int postId, WaitingState waitingState) {
+        List<User> users = waitingDealRepository.findUsersByPostIdAndWaitingState(postId, waitingState);
+        return users.stream()
+                .map(UserRes::fromEntity)
+                .collect(Collectors.toList());
     }
 
 

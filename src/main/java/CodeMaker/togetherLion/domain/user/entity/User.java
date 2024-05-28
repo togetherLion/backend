@@ -2,6 +2,7 @@ package CodeMaker.togetherLion.domain.user.entity;
 
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
+import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import lombok.*;
 
 import javax.persistence.*;
@@ -69,4 +70,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<WaitingDeal> waitingDeals = new ArrayList<>();
 }
