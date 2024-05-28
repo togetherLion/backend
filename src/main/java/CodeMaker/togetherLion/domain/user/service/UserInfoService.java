@@ -1,9 +1,6 @@
 package CodeMaker.togetherLion.domain.user.service;
 
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangeInfoReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangePwReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UnregisterReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UserProfileReq;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
@@ -121,6 +118,30 @@ public class UserInfoService {
                 .nickname(user.getNickname())
                 .profilePicture(user.getProfilePicture())
                 .profileIntro(user.getProfileIntro())
+                .build();
+    }
+
+    // 프로필 수정 : 지수
+    public ModifyProfileRes modifyProfile(ModifyProfileReq modifyProfileReq, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        if(!user.getNickname().equals(modifyProfileReq.getNickname())) {
+            user.setNickname(modifyProfileReq.getNickname());
+        }
+        if(!user.getProfilePicture().equals(modifyProfileReq.getProfilePicture())) {
+            user.setProfilePicture(modifyProfileReq.getProfilePicture());
+        }
+        if(!user.getProfileIntro().equals(modifyProfileReq.getProfileIntro())) {
+            user.setProfileIntro(modifyProfileReq.getProfileIntro());
+        }
+
+        userRepository.save(user);
+
+        return ModifyProfileRes.builder()
+                .nickname(user.getNickname())
+                .profileIntro(user.getProfileIntro())
+                .profilePicture(user.getProfilePicture())
                 .build();
     }
 }

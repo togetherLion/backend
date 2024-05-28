@@ -1,9 +1,6 @@
 package CodeMaker.togetherLion.domain.user.controller;
 
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangeInfoReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangePwReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UnregisterReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UserProfileReq;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
@@ -63,6 +60,12 @@ public class UserInfoController {
     @PostMapping("/userProfile")
     public UserProfileRes userProfile(@RequestBody UserProfileReq userProfileReq) {
         return userInfoService.userProfile(userProfileReq);
+    }
+
+    @PostMapping("/modifyProfile")
+    public ModifyProfileRes modifyProfile(@RequestBody ModifyProfileReq modifyProfileReq, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.modifyProfile(modifyProfileReq, userId);
     }
 
 }
