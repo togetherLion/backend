@@ -7,8 +7,8 @@ import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,33 +20,42 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Data
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final SessionUtil sessionUtil;
 
-    public Post createPost(PostReq postReq, HttpServletRequest request) {
+    public Post createPost(Post post, HttpServletRequest request) {
         // 세션에서 userId를 가져옵니다.
 
 
         int userId = sessionUtil.getUserIdFromSession(request);
         // userId를 사용하여 User 객체를 조회합니다.
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userId=" + userId));
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다. userId=" + userId));
 
         LocalDateTime now = LocalDateTime.now();
 
-        Post post = Post.builder()
-                .productName(postReq.productName())
-                .productContent(postReq.productContent())
-                .dealNum(postReq.dealNum())
-                .deadlineDate(postReq.deadlineDate())
-                .dealState(postReq.dealState())
-                .price(postReq.price())
-                .uploadDate(now) // 현재 시간을 uploadDate로 설정합니다.
-                .user(user)
-                .build();
+        User user = new User();
+        user.setUserId(userId);
+
+        post.setUser(user);
+        post.setUploadDate(now);
+
+//        Post post = Post.builder()
+//                .productName(postReq.productName())
+//                .productContent(postReq.productContent())
+//                .dealNum(postReq.dealNum())
+//                .deadlineDate(postReq.deadlineDate())
+//                .dealState(postReq.dealState())
+//                .price(postReq.price())
+//                .uploadDate(now) // 현재 시간을 uploadDate로 설정합니다.
+//                .user(user)
+//                .build();
+
+
 
         // Post 엔티티를 저장합니다.
         return postRepository.save(post);

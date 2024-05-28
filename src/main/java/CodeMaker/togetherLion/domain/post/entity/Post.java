@@ -3,7 +3,7 @@ package CodeMaker.togetherLion.domain.post.entity;
 import CodeMaker.togetherLion.domain.post.model.DealState;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,13 +12,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString
-@Getter
-@Setter
-@DynamicUpdate
+@Data
 public class Post {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "userId")
     User user;
 

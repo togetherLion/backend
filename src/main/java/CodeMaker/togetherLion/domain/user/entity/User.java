@@ -1,8 +1,13 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
+import CodeMaker.togetherLion.domain.post.entity.Post;
+import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
+import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -58,4 +63,8 @@ public class User {
 
     @Column
     private boolean userState; // 비활성화 여부
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
+
 }
