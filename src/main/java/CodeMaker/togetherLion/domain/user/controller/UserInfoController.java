@@ -3,10 +3,8 @@ package CodeMaker.togetherLion.domain.user.controller;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangeInfoReq;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangePwReq;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UnregisterReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangeInfoRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangePwRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.UnregisterRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.UserInfoRes;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UserProfileReq;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +50,19 @@ public class UserInfoController {
     public UnregisterRes unregister(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
         return userInfoService.unregister(unregisterReq, userId);
+    }
+
+    // 내 프로필 조회 : 지수
+    @PostMapping("/myProfile")
+    public MyProfileRes myProfile(HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.myProfile(userId);
+    }
+
+    // 상대방 프로필 조회 : 지수
+    @PostMapping("/userProfile")
+    public UserProfileRes userProfile(@RequestBody UserProfileReq userProfileReq) {
+        return userInfoService.userProfile(userProfileReq);
     }
 
 }

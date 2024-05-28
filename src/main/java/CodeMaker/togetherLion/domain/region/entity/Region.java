@@ -1,8 +1,11 @@
 package CodeMaker.togetherLion.domain.region.entity;
 
+import CodeMaker.togetherLion.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -25,4 +28,7 @@ public class Region {
 
     @Column
     private String townName; // 동
+
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+    private List<User> users = new ArrayList<>();
 }

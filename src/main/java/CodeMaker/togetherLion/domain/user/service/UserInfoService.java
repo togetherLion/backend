@@ -3,10 +3,8 @@ package CodeMaker.togetherLion.domain.user.service;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangeInfoReq;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.ChangePwReq;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UnregisterReq;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangeInfoRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.ChangePwRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.UnregisterRes;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.UserInfoRes;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.request.UserProfileReq;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -102,4 +100,27 @@ public class UserInfoService {
                 .build();
     }
 
+    // 내 프로필 조회 : 지수
+    public MyProfileRes myProfile(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        return MyProfileRes.builder()
+                .nickname(user.getNickname())
+                .profilePicture(user.getProfilePicture())
+                .profileIntro(user.getProfileIntro())
+                .build();
+    }
+
+    // 사용자 프로필 조회 : 지수
+    public UserProfileRes userProfile(UserProfileReq userProfileReq) {
+        User user = userRepository.findById(userProfileReq.getUserId())
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        return UserProfileRes.builder()
+                .nickname(user.getNickname())
+                .profilePicture(user.getProfilePicture())
+                .profileIntro(user.getProfileIntro())
+                .build();
+    }
 }
