@@ -26,10 +26,10 @@ public class LoginController {
     }
 
     // 주소 찾기 : 지수 - 완료
-    @PostMapping("/findAddress")
-    public FindAddressRes findAddress(@RequestBody FindAddressReq findAddressReq) {
-        return loginService.findAddress(findAddressReq);
-    }
+//    @PostMapping("/findAddress")
+//    public FindAddressRes findAddress(@RequestBody FindAddressReq findAddressReq) {
+//        return loginService.findAddress2(findAddressReq);
+//    }
 
     // 로그인 : 지수 - 완료
 //    @PostMapping("/login")

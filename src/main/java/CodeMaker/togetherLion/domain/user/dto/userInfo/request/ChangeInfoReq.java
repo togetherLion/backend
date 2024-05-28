@@ -10,7 +10,6 @@ import lombok.Setter;
 public class ChangeInfoReq {
 
     private String name;
-    private String nickname;
     private String phone;
     private String userAddress;
     private String account;

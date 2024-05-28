@@ -12,7 +12,6 @@ import lombok.Setter;
 public class ChangeInfoRes {
 
     private String name;
-    private String nickname;
     private String phone;
     private String userAddress;
     private String account;

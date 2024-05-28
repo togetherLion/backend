@@ -1,13 +1,9 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
-import CodeMaker.togetherLion.domain.post.entity.Post;
-import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
-import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
+import CodeMaker.togetherLion.domain.region.entity.Region;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -64,7 +60,7 @@ public class User {
     @Column
     private boolean userState; // 비활성화 여부
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts = new ArrayList<>();
-
+    @ManyToOne
+    @JoinColumn(name = "regionId") // 이는 데이터베이스의 실제 외래키 컬럼명을 지정합니다.
+    private Region region;
 }
