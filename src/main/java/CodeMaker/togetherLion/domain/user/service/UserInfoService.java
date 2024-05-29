@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.user.service;
 
+import CodeMaker.togetherLion.domain.Follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -14,6 +15,7 @@ import java.util.Objects;
 public class UserInfoService {
 
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
 
     // 회원 정보 조회
@@ -119,11 +121,19 @@ public class UserInfoService {
             isMyProfile = true;
         }
 
+        User followingdUser = userRepository.findById(nowUserId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+        boolean isFollowing = false;
+        if (followRepository.isFollowing(user, followingdUser)) {
+            isFollowing = true;
+        }
+
         return UserProfileRes.builder()
                 .nickname(user.getNickname())
                 .profilePicture(user.getProfilePicture())
                 .profileIntro(user.getProfileIntro())
                 .isMyProfile(isMyProfile)
+                .isFollowing(isFollowing)
                 .build();
     }
 

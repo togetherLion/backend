@@ -15,4 +15,5 @@ public class UserProfileRes {
     private String profilePicture;
     private String profileIntro;
     private boolean isMyProfile;
+    private boolean isFollowing;
 }
