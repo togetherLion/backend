@@ -1,7 +1,9 @@
 package CodeMaker.togetherLion.domain.Follow.service;
 
 import CodeMaker.togetherLion.domain.Follow.dto.request.FollowReq;
+import CodeMaker.togetherLion.domain.Follow.dto.request.UnfollowReq;
 import CodeMaker.togetherLion.domain.Follow.dto.response.FollowRes;
+import CodeMaker.togetherLion.domain.Follow.dto.response.UnfollowRes;
 import CodeMaker.togetherLion.domain.Follow.entity.Follow;
 import CodeMaker.togetherLion.domain.Follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -35,6 +37,25 @@ public class FollowService {
         return FollowRes.builder()
                 .followingNickname(followingUser.getNickname())
                 .followedNickname(followedUser.getNickname())
+                .build();
+    }
+
+    // 언팔로우
+    public UnfollowRes unfollow(UnfollowReq unfollowReq, int unfollowingUserId) {
+
+        User unfollowingUser = userRepository.findById(unfollowingUserId)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        User unfollowedUser = userRepository.findById(unfollowReq.getUserId())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        Follow follow = followRepository.findByFollowedUserAndFollowingUser(unfollowedUser, unfollowingUser)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 팔로우 정보입니다."));
+        followRepository.delete(follow);
+
+        return UnfollowRes.builder()
+                .unfollowingNickname(unfollowingUser.getNickname())
+                .unfollowedNickname(unfollowedUser.getNickname())
                 .build();
     }
 }
