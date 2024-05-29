@@ -18,13 +18,17 @@ public interface FollowRepository extends JpaRepository<Follow, Integer> {
                         @Param("followingUser") User followingUser);
 
     // 팔로워 수 조회
-    @Query("SELECT COUNT(*) FROM Follow " +
-            "WHERE followedUser = :followedUser")
+    @Query("SELECT COUNT(*) FROM Follow f " +
+            "JOIN User u ON f.followingUser = u " +
+            "WHERE f.followedUser = :followedUser " +
+            "AND u.userState = true")
     int countFollower(@Param("followedUser") User followedUser);
 
     // 팔로잉 수 조회
-    @Query("SELECT COUNT(*) FROM Follow " +
-            "WHERE followingUser = :followingUser")
+    @Query("SELECT COUNT(*) FROM Follow f " +
+            "JOIN User u ON f.followedUser = u " +
+            "WHERE f.followingUser = :followingUser " +
+            "AND u.userState = true")
     int countFollowing(@Param("followingUser") User followingUser);
 
     // 언팔로우
