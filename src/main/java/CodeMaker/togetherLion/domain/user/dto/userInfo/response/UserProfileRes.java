@@ -14,4 +14,5 @@ public class UserProfileRes {
     private String nickname;
     private String profilePicture;
     private String profileIntro;
+    private boolean isMyProfile;
 }

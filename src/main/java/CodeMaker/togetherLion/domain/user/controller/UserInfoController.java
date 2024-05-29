@@ -50,16 +50,17 @@ public class UserInfoController {
     }
 
     // 내 프로필 조회 : 지수
-    @PostMapping("/myProfile")
-    public MyProfileRes myProfile(HttpServletRequest request) {
-        int userId = sessionUtil.getUserIdFromSession(request);
-        return userInfoService.myProfile(userId);
-    }
+//    @PostMapping("/myProfile")
+//    public MyProfileRes myProfile(HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        return userInfoService.myProfile(userId);
+//    }
 
-    // 상대방 프로필 조회 : 지수
+    // 사용자 프로필 조회 : 지수 - 팔로잉, 팔로워 등 추가 필요
     @PostMapping("/userProfile")
-    public UserProfileRes userProfile(@RequestBody UserProfileReq userProfileReq) {
-        return userInfoService.userProfile(userProfileReq);
+    public UserProfileRes userProfile(@RequestBody UserProfileReq userProfileReq, HttpServletRequest request) {
+        int nowUserId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.userProfile(userProfileReq, nowUserId);
     }
 
     @PostMapping("/modifyProfile")

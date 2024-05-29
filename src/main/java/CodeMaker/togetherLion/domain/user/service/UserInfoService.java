@@ -98,26 +98,32 @@ public class UserInfoService {
     }
 
     // 내 프로필 조회 : 지수
-    public MyProfileRes myProfile(int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
-
-        return MyProfileRes.builder()
-                .nickname(user.getNickname())
-                .profilePicture(user.getProfilePicture())
-                .profileIntro(user.getProfileIntro())
-                .build();
-    }
+//    public MyProfileRes myProfile(int userId) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+//
+//        return MyProfileRes.builder()
+//                .nickname(user.getNickname())
+//                .profilePicture(user.getProfilePicture())
+//                .profileIntro(user.getProfileIntro())
+//                .build();
+//    }
 
     // 사용자 프로필 조회 : 지수
-    public UserProfileRes userProfile(UserProfileReq userProfileReq) {
+    public UserProfileRes userProfile(UserProfileReq userProfileReq, int nowUserId) {
         User user = userRepository.findById(userProfileReq.getUserId())
                 .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        boolean isMyProfile = false;
+        if(user.getUserId() == nowUserId) {
+            isMyProfile = true;
+        }
 
         return UserProfileRes.builder()
                 .nickname(user.getNickname())
                 .profilePicture(user.getProfilePicture())
                 .profileIntro(user.getProfileIntro())
+                .isMyProfile(isMyProfile)
                 .build();
     }
 
