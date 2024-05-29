@@ -134,6 +134,8 @@ public class UserInfoService {
                 .profileIntro(user.getProfileIntro())
                 .isMyProfile(isMyProfile)
                 .isFollowing(isFollowing)
+                .followerCount(followRepository.countFollower(user))
+                .followingCount(followRepository.countFollowing(user))
                 .build();
     }
 
