@@ -8,6 +8,7 @@ import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 @Service
@@ -34,31 +35,75 @@ public class UserInfoService {
 
 
     // 회원 정보 수정 : 지수 - 완료
-    public ChangeInfoRes changeInfo(ChangeInfoReq changeInfoReq, int userId) {
+//    public ChangeInfoRes changeInfo(ChangeInfoReq changeInfoReq, int userId) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+//
+//        if(!user.getName().equals(changeInfoReq.getName())) {
+//            user.setName(changeInfoReq.getName());
+//        }
+//        if(!user.getPhone().equals(changeInfoReq.getPhone())) {
+//            user.setPhone(changeInfoReq.getPhone());
+//        }
+//        if(!user.getUserAddress().equals(changeInfoReq.getUserAddress())) {
+//            user.setUserAddress(changeInfoReq.getUserAddress());
+//        }
+//        if(!Objects.equals(user.getAccount(), changeInfoReq.getAccount())) {
+//            user.setAccount(changeInfoReq.getAccount());
+//        }
+//
+//        userRepository.save(user);
+//
+//        return ChangeInfoRes.builder()
+//                .name(user.getName())
+//                .phone(user.getPhone())
+//                .userAddress(user.getUserAddress())
+//                .account(user.getAccount())
+//                .build();
+//    }
+
+    // 이름 변경
+    public String changeName(HashMap<String, Object> params, int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
 
-        if(!user.getName().equals(changeInfoReq.getName())) {
-            user.setName(changeInfoReq.getName());
-        }
-        if(!user.getPhone().equals(changeInfoReq.getPhone())) {
-            user.setPhone(changeInfoReq.getPhone());
-        }
-        if(!user.getUserAddress().equals(changeInfoReq.getUserAddress())) {
-            user.setUserAddress(changeInfoReq.getUserAddress());
-        }
-        if(!Objects.equals(user.getAccount(), changeInfoReq.getAccount())) {
-            user.setAccount(changeInfoReq.getAccount());
-        }
-
+        user.setName(params.get("name").toString());
         userRepository.save(user);
 
-        return ChangeInfoRes.builder()
-                .name(user.getName())
-                .phone(user.getPhone())
-                .userAddress(user.getUserAddress())
-                .account(user.getAccount())
-                .build();
+        return user.getName();
+    }
+
+    // 주소 변경
+    public String changeAddr(HashMap<String, Object> params, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        user.setUserAddress(params.get("address").toString());
+        userRepository.save(user);
+
+        return user.getUserAddress();
+    }
+
+    // 전화번호 변경
+    public String changePhone(HashMap<String, Object> params, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        user.setPhone(params.get("phone").toString());
+        userRepository.save(user);
+
+        return user.getPhone();
+    }
+
+    // 계좌번호 변경
+    public String changeAccount(HashMap<String, Object> params, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        user.setAccount(params.get("account").toString());
+        userRepository.save(user);
+
+        return user.getAccount();
     }
 
     // 비밀번호 변경 : 지수 - 완료

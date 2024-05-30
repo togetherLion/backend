@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/user")
@@ -27,10 +28,45 @@ public class UserInfoController {
 
 
     // 회원 정보 수정 : 지수 - 완료
-    @PostMapping("/changeInfo")
-    public ChangeInfoRes changeInfo(@RequestBody ChangeInfoReq changeInfoReq, HttpServletRequest request) {
+//    @PostMapping("/changeInfo")
+//    public ChangeInfoRes changeInfo(@RequestBody ChangeInfoReq changeInfoReq, HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        return userInfoService.changeInfo(changeInfoReq, userId);
+//    }
+
+    // 회원 정보 수정 : 지수 - 완료
+//    @PostMapping("/changeInfo")
+//    public ChangeInfoRes changeInfo(@RequestBody ChangeInfoReq changeInfoReq, HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        return userInfoService.changeInfo(changeInfoReq, userId);
+//    }
+
+    // 이름 수정
+    @PostMapping("/changeName")
+    public String changeName(@RequestBody HashMap<String, Object> params, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
-        return userInfoService.changeInfo(changeInfoReq, userId);
+        return userInfoService.changeName(params, userId);
+    }
+
+    // 주소 수정
+    @PostMapping("/changeAddr")
+    public String changeAddr(@RequestBody HashMap<String, Object> params, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.changeAddr(params, userId);
+    }
+
+    // 전화번호 수정
+    @PostMapping("/changePhone")
+    public String changePhone(@RequestBody HashMap<String, Object> params, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.changePhone(params, userId);
+    }
+
+    // 계좌번호 수정
+    @PostMapping("/changeAccount")
+    public String changeAccount(@RequestBody HashMap<String, Object> params, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return userInfoService.changeAccount(params, userId);
     }
 
     // 비밀번호 변경 : 지수 - 완료
@@ -61,6 +97,7 @@ public class UserInfoController {
         return userInfoService.userProfile(userProfileReq, nowUserId);
     }
 
+    // 사용자 프로필 수정
     @PostMapping("/modifyProfile")
     public ModifyProfileRes modifyProfile(@RequestBody ModifyProfileReq modifyProfileReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
@@ -69,6 +106,7 @@ public class UserInfoController {
 
 
 
+    // 회원탈퇴
     @DeleteMapping("/unregister")
     public ResponseEntity<?> deleteUser(HttpServletRequest request){
         int userId = sessionUtil.getUserIdFromSession(request);
