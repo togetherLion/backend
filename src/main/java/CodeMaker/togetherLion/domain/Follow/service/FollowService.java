@@ -22,10 +22,10 @@ public class FollowService {
     public FollowRes follow(FollowReq followReq, int followingUserId) {
 
         User followingUser = userRepository.findById(followingUserId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         User followedUser = userRepository.findById(followReq.getUserId())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         Follow follow = Follow.builder()
                 .followingUser(followingUser)
@@ -44,13 +44,13 @@ public class FollowService {
     public UnfollowRes unfollow(UnfollowReq unfollowReq, int unfollowingUserId) {
 
         User unfollowingUser = userRepository.findById(unfollowingUserId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         User unfollowedUser = userRepository.findById(unfollowReq.getUserId())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
         Follow follow = followRepository.findByFollowedUserAndFollowingUser(unfollowedUser, unfollowingUser)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 팔로우 정보입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팔로우 정보입니다."));
         followRepository.delete(follow);
 
         return UnfollowRes.builder()

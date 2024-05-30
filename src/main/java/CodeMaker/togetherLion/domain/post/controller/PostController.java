@@ -63,10 +63,10 @@ public class PostController {
     }
 
     // 사용자가 속한 지역 게시글 조회 (메인 화면)
-//    @GetMapping("")
-//    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
-//        int userId = sessionUtil.getUserIdFromSession(request);
-//        List<PostRes> posts = postService.getRegionPosts(userId);
-//        return ResponseEntity.ok(posts);
-//    }
+    @GetMapping("/region")
+    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = postService.getRegionPosts(userId);
+        return ResponseEntity.ok(posts);
+    }
 }

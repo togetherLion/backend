@@ -25,7 +25,7 @@ public class UserInfoService {
     // 회원 정보 조회
     public UserInfoRes userInfo(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         return UserInfoRes.builder()
                 .loginId(user.getLoginId())
@@ -68,7 +68,7 @@ public class UserInfoService {
     // 이름 변경
     public String changeName(HashMap<String, Object> params, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         user.setName(params.get("name").toString());
         userRepository.save(user);
@@ -79,11 +79,11 @@ public class UserInfoService {
     // 주소 변경
     public String changeAddr(HashMap<String, Object> params, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         int regionId = loginService.findAddress(params.get("userLat").toString(), params.get("userLong").toString());
         Region region = regionRepository.findById(regionId)
-                .orElseThrow(() -> new RuntimeException("유효하지 않은 지역 id 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 지역 id 입니다."));
 
         user.setUserAddress(params.get("address").toString());
         user.setUserLat(params.get("userLat").toString());
@@ -97,7 +97,7 @@ public class UserInfoService {
     // 전화번호 변경
     public String changePhone(HashMap<String, Object> params, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         user.setPhone(params.get("phone").toString());
         userRepository.save(user);
@@ -108,7 +108,7 @@ public class UserInfoService {
     // 계좌번호 변경
     public String changeAccount(HashMap<String, Object> params, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         user.setAccount(params.get("account").toString());
         userRepository.save(user);
@@ -119,14 +119,14 @@ public class UserInfoService {
     // 비밀번호 변경 : 지수 - 완료
     public ChangePwRes changePw(ChangePwReq changePwReq, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         if(!user.getPassword().equals(changePwReq.getNowPassword())) {
-            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
 
         if(user.getPassword().equals(changePwReq.getNewPassword())) {
-            throw new RuntimeException("현재 비밀번호와 일치 합니다.");
+            throw new IllegalArgumentException("현재 비밀번호와 일치 합니다.");
         }
 
         user.setPassword(changePwReq.getNewPassword());
@@ -140,10 +140,10 @@ public class UserInfoService {
     // 회원 탈퇴 : 지수 - 완료
     public UnregisterRes unregister(UnregisterReq unregisterReq, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         if(!unregisterReq.getPassword().equals(user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
         user.setUserState(false);
@@ -169,7 +169,7 @@ public class UserInfoService {
     // 사용자 프로필 조회 : 지수
     public UserProfileRes userProfile(UserProfileReq userProfileReq, int nowUserId) {
         User user = userRepository.findById(userProfileReq.getUserId())
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         boolean isMyProfile = false;
         if(user.getUserId() == nowUserId) {
@@ -177,7 +177,7 @@ public class UserInfoService {
         }
 
         User followingdUser = userRepository.findById(nowUserId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
         boolean isFollowing = false;
         if (followRepository.isFollowing(user, followingdUser)) {
             isFollowing = true;
@@ -197,7 +197,7 @@ public class UserInfoService {
     // 프로필 수정 : 지수
     public ModifyProfileRes modifyProfile(ModifyProfileReq modifyProfileReq, int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
 
         if(!user.getNickname().equals(modifyProfileReq.getNickname())) {
             user.setNickname(modifyProfileReq.getNickname());

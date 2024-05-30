@@ -86,10 +86,8 @@ public class PostService {
 
     // 사용자가 속한 지역 게시글 조회 (메인 화면)
     public List<PostRes> getRegionPosts(int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 userId입니다."));
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findPostByRegion(userId);
         return posts.stream()
                 .map(PostRes::fromEntity)
                 .collect(Collectors.toList());

@@ -31,11 +31,11 @@ public class SearchService {
         List<Post> posts = postRepository.searchBySearchText(searchText);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
         if(userSearchRepository.existsBySearchTextAndUser(searchText, user)) { // 중복되는 searchText 있으면 시간만 update
             UserSearch userSearch = userSearchRepository.findBySearchTextAndUser(searchText, user)
-                    .orElseThrow(() -> new RuntimeException("존재하지 않는 검색 기록입니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 검색 기록입니다."));
 
             userSearch.setSearchDate(LocalDateTime.now());
             userSearchRepository.save(userSearch);
@@ -58,7 +58,7 @@ public class SearchService {
     // 최근 검색 기록
     public List<String> recentSearch(int userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 userId입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
         Pageable pageable = PageRequest.of(0, 5);
         List<String> recentSearches = userSearchRepository.findRecentSearch(user, pageable);
@@ -70,4 +70,5 @@ public class SearchService {
     public List<String> bestSearch() {
         return userSearchRepository.findBestSearch();
     }
+
 }

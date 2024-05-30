@@ -13,8 +13,17 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     //WHERE product_name LIKE '%칼%';
 
     @Query(value = "SELECT p FROM Post p " +
-            "WHERE p.productName LIKE %:searchText% ")
+            "WHERE p.productName LIKE %:searchText% " +
+            "ORDER BY p.uploadDate DESC ")
     List<Post> searchBySearchText(@Param("searchText") String searchText);
 
-    //@Query("")
+    @Query("SELECT p " +
+            "FROM Post AS p " +
+            "INNER JOIN User AS u ON p.user.userId = u.userId " +
+            "WHERE u.region = (" +
+            "   SELECT region " +
+            "   FROM User " +
+            "   WHERE userId = :userId) " +
+            "ORDER BY p.uploadDate DESC ")
+    List<Post> findPostByRegion(@Param("userId") int userId);
 }
