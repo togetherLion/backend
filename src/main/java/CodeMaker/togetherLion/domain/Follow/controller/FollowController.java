@@ -1,4 +1,4 @@
-package CodeMaker.togetherLion.domain.Follow.controller;
+package CodeMaker.togetherLion.domain.follow.controller;
 
 import CodeMaker.togetherLion.domain.Follow.dto.request.FollowReq;
 import CodeMaker.togetherLion.domain.Follow.dto.request.UnfollowReq;

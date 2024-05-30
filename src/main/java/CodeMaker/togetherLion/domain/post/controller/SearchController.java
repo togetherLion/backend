@@ -4,11 +4,13 @@ import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
 import CodeMaker.togetherLion.domain.post.service.SearchService;
+import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -19,10 +21,12 @@ public class SearchController {
 
     private final PostService postService;
     private final SearchService searchService;
+    private final SessionUtil sessionUtil;
 
     @GetMapping("/search/{searchText}")
-    public ResponseEntity<?> searchPost(@PathVariable String searchText) {
-        List<PostRes> posts = searchService.searchPost(searchText);
+    public ResponseEntity<?> searchPost(@PathVariable String searchText, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = searchService.searchPost(searchText, userId);
         return ResponseEntity.ok(posts);
     }
 }
