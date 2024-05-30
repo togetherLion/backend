@@ -37,8 +37,8 @@ public class WaitingDealController {
         return ResponseEntity.ok(waitingDealRes);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingState(@RequestParam int postId) {
+    @GetMapping("/user/{postId}")
+    public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingState(@PathVariable Integer postId) {
         List<UserRes> userResponses = waitingDealService.getUsersByPostIdAndWaitingState(postId, WaitingState.PENDING);
         return ResponseEntity.ok(userResponses);
     }

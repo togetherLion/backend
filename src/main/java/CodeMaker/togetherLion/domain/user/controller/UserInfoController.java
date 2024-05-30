@@ -69,7 +69,7 @@ public class UserInfoController {
 
 
     //연관관계 매핑 - 회원 삭제, 나중에 지수랑 얘기하고 경로수정해야될듯
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/unregister/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable int userId){
         userInfoService.deleteUser(userId);
         return ResponseEntity.ok().build();
