@@ -5,10 +5,8 @@ import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -67,6 +65,14 @@ public class UserInfoController {
     public ModifyProfileRes modifyProfile(@RequestBody ModifyProfileReq modifyProfileReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
         return userInfoService.modifyProfile(modifyProfileReq, userId);
+    }
+
+
+    //연관관계 매핑 - 회원 삭제, 나중에 지수랑 얘기하고 경로수정해야될듯
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable int userId){
+        userInfoService.deleteUser(userId);
+        return ResponseEntity.ok().build();
     }
 
 }

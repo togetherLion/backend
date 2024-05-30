@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.waitingdeal.controller;
 
+import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
@@ -13,6 +14,7 @@ import CodeMaker.togetherLion.domain.waitingdeal.service.WaitingDealService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,7 @@ public class WaitingDealController {
         List<UserRes> userResponses = waitingDealService.getUsersByPostIdAndWaitingState(postId, WaitingState.PENDING);
         return ResponseEntity.ok(userResponses);
     }
+
 
 
 

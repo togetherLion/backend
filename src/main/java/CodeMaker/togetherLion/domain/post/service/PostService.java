@@ -75,10 +75,11 @@ public class PostService {
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음!"));
 
-        foundPost.update(postReq.productName(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price());
+        foundPost.update(postReq.productName(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price(), postReq.postPicture());
         return foundPost;
     }
 
+    @Transactional
     public void deletePost(Integer postId) {
         postRepository.deleteById(postId);
     }

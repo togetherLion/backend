@@ -13,6 +13,7 @@ import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepositor
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -62,6 +63,13 @@ public class WaitingDealService {
         return users.stream()
                 .map(UserRes::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public WaitingDeal updateWaitingDeal(WaitingDealReq waitingDealReq) {
+        WaitingDeal waitingDeal = waitingDealReq.toEntity();
+        waitingDeal.update(WaitingState.ACCEPTED);
+        return waitingDeal;
     }
 
 

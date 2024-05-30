@@ -162,4 +162,8 @@ public class UserInfoService {
                 .profilePicture(user.getProfilePicture())
                 .build();
     }
+
+    public void deleteUser(int userId) {
+        userRepository.deleteById(userId);
+    }
 }

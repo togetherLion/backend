@@ -14,7 +14,8 @@ public record PostReq(
         DealState dealState,
         Integer price,
         User user,
-        LocalDateTime uploadDate
+        LocalDateTime uploadDate,
+        String postPicture
 
 ) {
     public Post toEntity(User user) {
@@ -28,6 +29,7 @@ public record PostReq(
                 .price(price)
                 .user(user)
                 .uploadDate(uploadDate)
+                .postPicture(postPicture)
                 .build();
 
     }

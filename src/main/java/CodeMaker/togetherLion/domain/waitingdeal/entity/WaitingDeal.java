@@ -20,11 +20,11 @@ public class WaitingDeal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int waitingDealId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -39,6 +39,10 @@ public class WaitingDeal {
         this.user = user;
         this.post = post;
         this.requestDate = requestDate;
+        this.waitingState = waitingState;
+    }
+
+    public void update(WaitingState waitingState){
         this.waitingState = waitingState;
     }
 

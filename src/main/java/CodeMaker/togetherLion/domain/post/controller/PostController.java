@@ -53,4 +53,10 @@ public class PostController {
         PostRes postRes = PostRes.fromEntity(post);
         return ResponseEntity.ok(postRes);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.noContent().build();
+    }
 }
