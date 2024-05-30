@@ -1,11 +1,11 @@
-package CodeMaker.togetherLion.domain.Follow.service;
+package CodeMaker.togetherLion.domain.follow.service;
 
-import CodeMaker.togetherLion.domain.Follow.dto.request.FollowReq;
-import CodeMaker.togetherLion.domain.Follow.dto.request.UnfollowReq;
-import CodeMaker.togetherLion.domain.Follow.dto.response.FollowRes;
-import CodeMaker.togetherLion.domain.Follow.dto.response.UnfollowRes;
-import CodeMaker.togetherLion.domain.Follow.entity.Follow;
-import CodeMaker.togetherLion.domain.Follow.repository.FollowRepository;
+import CodeMaker.togetherLion.domain.follow.dto.request.FollowReq;
+import CodeMaker.togetherLion.domain.follow.dto.request.UnfollowReq;
+import CodeMaker.togetherLion.domain.follow.dto.response.FollowRes;
+import CodeMaker.togetherLion.domain.follow.dto.response.UnfollowRes;
+import CodeMaker.togetherLion.domain.follow.entity.Follow;
+import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -16,5 +16,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "WHERE p.productName LIKE %:searchText% ")
     List<Post> searchBySearchText(@Param("searchText") String searchText);
 
-
+    //@Query("")
 }

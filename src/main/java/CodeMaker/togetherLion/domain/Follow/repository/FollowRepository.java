@@ -1,6 +1,6 @@
-package CodeMaker.togetherLion.domain.Follow.repository;
+package CodeMaker.togetherLion.domain.follow.repository;
 
-import CodeMaker.togetherLion.domain.Follow.entity.Follow;
+import CodeMaker.togetherLion.domain.follow.entity.Follow;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

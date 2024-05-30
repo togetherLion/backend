@@ -1,6 +1,8 @@
 package CodeMaker.togetherLion.domain.user.service;
 
-import CodeMaker.togetherLion.domain.Follow.repository.FollowRepository;
+import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
+import CodeMaker.togetherLion.domain.region.entity.Region;
+import CodeMaker.togetherLion.domain.region.repository.RegionRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -9,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,8 @@ public class UserInfoService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final LoginService loginService;
+    private final RegionRepository regionRepository;
 
 
     // 회원 정보 조회
@@ -78,7 +81,14 @@ public class UserInfoService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
 
+        int regionId = loginService.findAddress(params.get("userLat").toString(), params.get("userLong").toString());
+        Region region = regionRepository.findById(regionId)
+                .orElseThrow(() -> new RuntimeException("유효하지 않은 지역 id 입니다."));
+
         user.setUserAddress(params.get("address").toString());
+        user.setUserLat(params.get("userLat").toString());
+        user.setUserLong(params.get("userLong").toString());
+        user.setRegion(region);
         userRepository.save(user);
 
         return user.getUserAddress();

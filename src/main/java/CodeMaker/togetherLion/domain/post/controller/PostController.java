@@ -4,6 +4,7 @@ import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
+import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final SessionUtil sessionUtil;
 
     @PostMapping("")
     public ResponseEntity<PostRes> createPost(@RequestBody Post post, HttpServletRequest request) {
@@ -59,4 +61,12 @@ public class PostController {
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
     }
+
+    // 사용자가 속한 지역 게시글 조회 (메인 화면)
+//    @GetMapping("")
+//    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        List<PostRes> posts = postService.getRegionPosts(userId);
+//        return ResponseEntity.ok(posts);
+//    }
 }

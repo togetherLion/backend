@@ -1,10 +1,10 @@
 package CodeMaker.togetherLion.domain.follow.controller;
 
-import CodeMaker.togetherLion.domain.Follow.dto.request.FollowReq;
-import CodeMaker.togetherLion.domain.Follow.dto.request.UnfollowReq;
-import CodeMaker.togetherLion.domain.Follow.dto.response.FollowRes;
-import CodeMaker.togetherLion.domain.Follow.dto.response.UnfollowRes;
-import CodeMaker.togetherLion.domain.Follow.service.FollowService;
+import CodeMaker.togetherLion.domain.follow.dto.request.FollowReq;
+import CodeMaker.togetherLion.domain.follow.dto.request.UnfollowReq;
+import CodeMaker.togetherLion.domain.follow.dto.response.FollowRes;
+import CodeMaker.togetherLion.domain.follow.dto.response.UnfollowRes;
+import CodeMaker.togetherLion.domain.follow.service.FollowService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

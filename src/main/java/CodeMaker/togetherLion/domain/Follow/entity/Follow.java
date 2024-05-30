@@ -1,4 +1,4 @@
-package CodeMaker.togetherLion.domain.Follow.entity;
+package CodeMaker.togetherLion.domain.follow.entity;
 
 import CodeMaker.togetherLion.domain.user.entity.User;
 import lombok.*;

@@ -1,4 +1,4 @@
-package CodeMaker.togetherLion.domain.Follow.dto.request;
+package CodeMaker.togetherLion.domain.follow.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
