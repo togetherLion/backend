@@ -65,4 +65,9 @@ public class SearchService {
 
         return recentSearches;
     }
+
+    // 인기 검색어
+    public List<String> bestSearch() {
+        return userSearchRepository.findBestSearch();
+    }
 }

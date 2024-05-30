@@ -20,4 +20,10 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Integer>
     @Query("SELECT us.searchText FROM UserSearch us WHERE us.user = :user ORDER BY us.searchDate DESC")
     List<String> findRecentSearch(@Param("user") User user, Pageable pageable);
 
+    // 인기 검색어 10개
+    @Query("SELECT us.searchText FROM UserSearch us " +
+            "GROUP BY us.searchText " +
+            "ORDER BY COUNT(*) DESC, us.searchDate DESC")
+    List<String> findBestSearch();
+
 }

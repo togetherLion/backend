@@ -38,4 +38,11 @@ public class SearchController {
         List<String> searchTexts = searchService.recentSearch(userId);
         return ResponseEntity.ok(searchTexts);
     }
+
+    // 인기 검색어
+    @PostMapping("/bestSearch")
+    public ResponseEntity<List<String>> bestSearch() {
+        List<String> bestSearchs = searchService.bestSearch();
+        return ResponseEntity.ok(bestSearchs);
+    }
 }
