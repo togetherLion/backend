@@ -1,7 +1,6 @@
 package CodeMaker.togetherLion.domain.user.service;
 
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
-import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.region.repository.RegionRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
@@ -180,9 +179,9 @@ public class UserInfoService {
         User followingdUser = userRepository.findById(nowUserId)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
         boolean isFollowing = false;
-//        if (followRepository.isFollowing(user, followingdUser)) {
-//            isFollowing = true;
-//        }
+        if (followRepository.isFollowing(user, followingdUser)) {
+            isFollowing = true;
+        }
 
         return UserProfileRes.builder()
                 .nickname(user.getNickname())
@@ -190,8 +189,8 @@ public class UserInfoService {
                 .profileIntro(user.getProfileIntro())
                 .isMyProfile(isMyProfile)
                 .isFollowing(isFollowing)
-                //.followerCount(followRepository.countFollower(user))
-                //.followingCount(followRepository.countFollowing(user))
+                .followerCount(followRepository.countFollower(user))
+                .followingCount(followRepository.countFollowing(user))
                 .build();
     }
 
