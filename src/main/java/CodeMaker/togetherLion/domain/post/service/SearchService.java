@@ -91,4 +91,13 @@ public class SearchService {
                 .collect(Collectors.toList());
     }
 
+    // 조회 옵션 - 가격대 설정
+    public List<PostRes> searchPostPriceZone(String searchText, int lowPrice, int highPrice, int userId) {
+        List<Post> posts = postRepository.searchPostPriceZone(userId, searchText, lowPrice, highPrice);
+
+        return posts.stream()
+                .map(PostRes::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }

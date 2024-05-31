@@ -61,4 +61,13 @@ public class SearchController {
         List<PostRes> posts = searchService.searchPostHighCost(searchText, userId);
         return ResponseEntity.ok(posts);
     }
+
+    // 조회 옵션 - 가격대 설정
+    @GetMapping("/search/{searchText}/{lowPrice}/{highPrice}")
+    public ResponseEntity<?> searchPostPriceZone(@PathVariable String searchText, @PathVariable int lowPrice,
+                                                 @PathVariable int highPrice, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = searchService.searchPostPriceZone(searchText, lowPrice, highPrice, userId);
+        return ResponseEntity.ok(posts);
+    }
 }
