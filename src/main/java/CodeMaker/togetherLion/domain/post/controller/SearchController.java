@@ -23,7 +23,7 @@ public class SearchController {
     private final SearchService searchService;
     private final SessionUtil sessionUtil;
 
-    // 게시글 검색
+    // 게시글 검색 -> 사용자가 속한 지역 게시글 검색으로 변경
     @GetMapping("/search/{searchText}")
     public ResponseEntity<?> searchPost(@PathVariable String searchText, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);

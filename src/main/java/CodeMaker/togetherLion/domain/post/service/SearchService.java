@@ -26,10 +26,12 @@ public class SearchService {
     private final UserSearchRepository userSearchRepository;
     private final UserRepository userRepository;
 
-    // 게시글 조회
+    // 게시글 검색
     public List<PostRes> searchPost(String searchText, int userId) {
-        List<Post> posts = postRepository.searchBySearchText(searchText);
+        List<Post> posts = postRepository.searchPostByRegion(userId, searchText);
 
+
+        // 검색 기록 저장
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
