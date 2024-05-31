@@ -3,7 +3,6 @@ package CodeMaker.togetherLion.domain.complain.dto;
 import CodeMaker.togetherLion.domain.complain.entity.Complain;
 import CodeMaker.togetherLion.domain.complain.model.ComplainCategory;
 import CodeMaker.togetherLion.domain.user.entity.User;
-import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 

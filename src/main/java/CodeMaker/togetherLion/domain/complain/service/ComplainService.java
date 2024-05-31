@@ -2,6 +2,7 @@ package CodeMaker.togetherLion.domain.complain.service;
 
 import CodeMaker.togetherLion.domain.complain.dto.ComplainReq;
 import CodeMaker.togetherLion.domain.complain.entity.Complain;
+import CodeMaker.togetherLion.domain.complain.model.ComplainCategory;
 import CodeMaker.togetherLion.domain.complain.repository.ComplainRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
@@ -11,6 +12,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +35,34 @@ public class ComplainService {
         User targetUser = userRepository.findById(complainReq.targetUserId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
+        // 저장
+        Complain complain = complainReq.toEntity(targetUser, complainUser);
+        complain.setComplainDate(LocalDateTime.now());
+        complainRepository.save(complain);
+
+
         // 신고 당한 횟수 추가
         targetUser.setComplainCount(targetUser.getComplainCount() + 1);
         userRepository.save(targetUser);
 
-        // 신고 당한 횟수 5번 이상이면 경고 알림
-        if(targetUser.getComplainCount() >= 5) {
+        // 신고 당한 횟수 5번이면 경고 알림
+        if(targetUser.getComplainCount() == 5) {
+            StringBuilder message = new StringBuilder();
+            List<Object[]> lists = complainRepository.getUserComplain(targetUser);
+            boolean first = true;
+            for(Object[] obj : lists) {
+                if(first) {
+                    first = false;
+                }
+                else{
+                    message.append(", ");
+                }
+
+                ComplainCategory category = (ComplainCategory) obj[0];
+                message.append(category.getMsg()).append(" ").append(obj[1]).append("건");
+            }
+            System.out.println(message.toString());
+
             // 알림 보내는 코드
         }
 
@@ -44,9 +71,6 @@ public class ComplainService {
             targetUser.setUserState(false);
         }
 
-        Complain complain = complainReq.toEntity(targetUser, complainUser);
-        complain.setComplainDate(LocalDateTime.now());
-
-        return complainRepository.save(complain);
+        return complain;
     }
 }
