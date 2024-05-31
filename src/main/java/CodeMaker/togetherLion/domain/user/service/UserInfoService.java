@@ -1,6 +1,7 @@
 package CodeMaker.togetherLion.domain.user.service;
 
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
+import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.region.repository.RegionRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
@@ -155,16 +156,16 @@ public class UserInfoService {
     }
 
     // 내 프로필 조회 : 지수
-//    public MyProfileRes myProfile(int userId) {
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
-//
-//        return MyProfileRes.builder()
-//                .nickname(user.getNickname())
-//                .profilePicture(user.getProfilePicture())
-//                .profileIntro(user.getProfileIntro())
-//                .build();
-//    }
+    public MyProfileRes myProfile(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("잘못된 userId입니다."));
+
+        return MyProfileRes.builder()
+                .nickname(user.getNickname())
+                .profilePicture(user.getProfilePicture())
+                .profileIntro(user.getProfileIntro())
+                .build();
+    }
 
     // 사용자 프로필 조회 : 지수
     public UserProfileRes userProfile(UserProfileReq userProfileReq, int nowUserId) {
@@ -179,9 +180,9 @@ public class UserInfoService {
         User followingdUser = userRepository.findById(nowUserId)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
         boolean isFollowing = false;
-        if (followRepository.isFollowing(user, followingdUser)) {
-            isFollowing = true;
-        }
+//        if (followRepository.isFollowing(user, followingdUser)) {
+//            isFollowing = true;
+//        }
 
         return UserProfileRes.builder()
                 .nickname(user.getNickname())
@@ -189,8 +190,8 @@ public class UserInfoService {
                 .profileIntro(user.getProfileIntro())
                 .isMyProfile(isMyProfile)
                 .isFollowing(isFollowing)
-                .followerCount(followRepository.countFollower(user))
-                .followingCount(followRepository.countFollowing(user))
+                //.followerCount(followRepository.countFollower(user))
+                //.followingCount(followRepository.countFollowing(user))
                 .build();
     }
 

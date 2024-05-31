@@ -20,9 +20,9 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int ChatRoomId;
-
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
-    private List<User> users = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+//    private List<User> users = new ArrayList<>();
 
 
     private String roomId;

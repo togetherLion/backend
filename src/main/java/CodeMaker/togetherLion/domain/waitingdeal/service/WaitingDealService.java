@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.waitingdeal.service;
 
+import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
@@ -15,9 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,7 @@ public class WaitingDealService {
     private final UserRepository userRepository;
     private final SessionUtil sessionUtil;
     private final WaitingDealRepository waitingDealRepository;
+    private final ChatRepository chatRepository;
 
     public WaitingDeal createWaitingDeal(WaitingDealReq waitingDealReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
@@ -96,5 +101,35 @@ public class WaitingDealService {
         }
     }
 
+    public Map<String, Object> canCreateChatRoom(int postId, HttpServletRequest request) {
+        // 현재 ACCEPTED 상태의 WaitingDeal 수를 가져옴
+        int acceptedCount = waitingDealRepository.countByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+
+        // Post 엔티티를 가져와 dealNum 값을 확인
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            int dealNum = post.getDealNum();
+
+            // 조건에 따라 결과를 담을 Map 생성
+            Map<String, Object> result = new HashMap<>();
+
+            if (acceptedCount == dealNum) {
+                Optional<String> roomIdOptional = chatRepository.findRoomIdByPost_PostId(postId);
+                int userId = sessionUtil.getUserIdFromSession(request);
+
+                // roomId와 userId를 Map에 저장
+                roomIdOptional.ifPresent(roomId -> result.put("roomId", roomId));
+
+
+                return result;
+            } else {
+                result.put("message", "NO");
+                return result;
+            }
+        } else {
+            throw new EntityNotFoundException("Post not found with id: " + postId);
+        }
+    }
 
 }

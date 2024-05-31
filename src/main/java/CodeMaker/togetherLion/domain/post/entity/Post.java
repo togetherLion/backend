@@ -58,6 +58,7 @@ public class Post {
     private String postPicture;
 
 
+
     @Builder
     public Post(User user, String productName, String productContent, Integer dealNum, LocalDateTime deadlineDate, DealState dealState, Integer price, LocalDateTime uploadDate, String postPicture) {
         this.user = user;
