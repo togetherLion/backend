@@ -45,4 +45,29 @@ public class SearchController {
         List<String> bestSearchs = searchService.bestSearch();
         return ResponseEntity.ok(bestSearchs);
     }
+
+    // 조회 옵션 - 저가순
+    @GetMapping("/search/low/{searchText}")
+    public ResponseEntity<?> searchPostLowCost(@PathVariable String searchText, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = searchService.searchPostLowCost(searchText, userId);
+        return ResponseEntity.ok(posts);
+    }
+
+    // 조회 옵션 - 고가순
+    @GetMapping("/search/high/{searchText}")
+    public ResponseEntity<?> searchPostHighCost(@PathVariable String searchText, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = searchService.searchPostHighCost(searchText, userId);
+        return ResponseEntity.ok(posts);
+    }
+
+    // 조회 옵션 - 가격대 설정
+    @GetMapping("/search/{searchText}/{lowPrice}/{highPrice}")
+    public ResponseEntity<?> searchPostPriceZone(@PathVariable String searchText, @PathVariable int lowPrice,
+                                                 @PathVariable int highPrice, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<PostRes> posts = searchService.searchPostPriceZone(searchText, lowPrice, highPrice, userId);
+        return ResponseEntity.ok(posts);
+    }
 }
