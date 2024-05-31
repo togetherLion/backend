@@ -73,4 +73,22 @@ public class SearchService {
         return userSearchRepository.findBestSearch();
     }
 
+    // 조회 옵션 - 저가순
+    public List<PostRes> searchPostLowCost(String searchText, int userId) {
+        List<Post> posts = postRepository.searchPostLowCost(userId, searchText);
+
+        return posts.stream()
+                .map(PostRes::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    // 조회 옵션 - 고가순
+    public List<PostRes> searchPostHighCost(String searchText, int userId) {
+        List<Post> posts = postRepository.searchPostHighCost(userId, searchText);
+
+        return posts.stream()
+                .map(PostRes::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 }
