@@ -10,11 +10,11 @@ import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealReq;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
 import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Entity;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,10 +66,34 @@ public class WaitingDealService {
     }
 
     @Transactional
-    public WaitingDeal updateWaitingDeal(WaitingDealReq waitingDealReq) {
-        WaitingDeal waitingDeal = waitingDealReq.toEntity();
-        waitingDeal.update(WaitingState.ACCEPTED);
-        return waitingDeal;
+    public void updateWaitingDealStateToAccepted(int userId, int postId) {
+        Optional<WaitingDeal> waitingDealOptional = waitingDealRepository.findByUserIdAndPostId(userId, postId);
+
+        if (waitingDealOptional.isPresent()) {
+            WaitingDeal waitingDeal = waitingDealOptional.get();
+
+            // 현재 ACCEPTED 상태의 WaitingDeal 수를 가져옴
+            int acceptedCount = waitingDealRepository.countByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+
+            // Post 엔티티를 가져와 dealNum 값을 확인
+            Optional<Post> postOptional = postRepository.findById(postId);
+            if (postOptional.isPresent()) {
+                Post post = postOptional.get();
+                int dealNum = post.getDealNum();
+
+                // dealNum을 초과하지 않는지 확인
+                if (acceptedCount < dealNum) {
+                    waitingDeal.update(WaitingState.ACCEPTED);
+                    waitingDealRepository.save(waitingDeal);
+                } else {
+                    throw new IllegalStateException("해당 Post에 대한 WaitingDeal의 ACCEPTED 상태의 개수가 dealNum을 초과하였습니다.");
+                }
+            } else {
+                throw new IllegalStateException("해당하는 Post를 찾을 수 없습니다.");
+            }
+        } else {
+            throw new IllegalStateException("해당하는 WaitingDeal을 찾을 수 없습니다.");
+        }
     }
 
 

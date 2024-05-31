@@ -17,7 +17,16 @@ public interface WaitingDealRepository extends JpaRepository<WaitingDeal, Intege
     @Query("SELECT wd.user FROM WaitingDeal wd WHERE wd.post.postId = :postId AND wd.waitingState = :waitingState ORDER BY wd.requestDate DESC")
     List<User> findUsersByPostIdAndWaitingState(@Param("postId") int postId, @Param("waitingState") WaitingState waitingState);
 
+
     Optional<WaitingDeal> findByUserUserIdAndPostPostId(int userId, int postId);
+    @Query("SELECT wd FROM WaitingDeal wd WHERE wd.user.userId = :userId AND wd.post.postId = :postId")
+    Optional<WaitingDeal> findByUserIdAndPostId(int userId, int postId);
+
+    @Query("SELECT COUNT(wd) FROM WaitingDeal wd WHERE wd.post.postId = :postId AND wd.waitingState = :waitingState")
+    int countByPostIdAndWaitingState(int postId, WaitingState waitingState);
+
+
+
 
 
 }

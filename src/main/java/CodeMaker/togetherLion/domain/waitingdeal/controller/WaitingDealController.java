@@ -37,12 +37,27 @@ public class WaitingDealController {
         return ResponseEntity.ok(waitingDealRes);
     }
 
-    @GetMapping("/user/{postId}")
-    public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingState(@PathVariable Integer postId) {
+    @GetMapping("/userpending/{postId}")
+    public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingStatePending(@PathVariable Integer postId) {
         List<UserRes> userResponses = waitingDealService.getUsersByPostIdAndWaitingState(postId, WaitingState.PENDING);
         return ResponseEntity.ok(userResponses);
     }
 
+    @PutMapping("/accept")
+    public ResponseEntity<?> acceptWaitingDeal(@RequestParam int userId, @RequestParam int postId) {
+        try {
+            waitingDealService.updateWaitingDealStateToAccepted(userId, postId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/useraccepted/{postId}")
+    public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingStateAccepted(@PathVariable Integer postId) {
+        List<UserRes> userResponses = waitingDealService.getUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+        return ResponseEntity.ok(userResponses);
+    }
 
 
 

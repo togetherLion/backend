@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
+import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.usersearch.entity.UserSearch;
@@ -7,6 +8,7 @@ import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @ToString
 @Getter
 @Setter
+@Data
 public class User {
 
     @Id
@@ -77,4 +80,11 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserSearch> userSearches = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
+
+
+
 }
