@@ -48,6 +48,8 @@ public class LoginService {
                 .profileIntro("안녕하세요~ 반갑습니다^0^")
                 .profilePicture(picture)
                 .region(region)
+                .userLat(signupReq.getUserLat())
+                .userLong(signupReq.getUserLong())
                 .build();
 
         userRepository.save(user);
