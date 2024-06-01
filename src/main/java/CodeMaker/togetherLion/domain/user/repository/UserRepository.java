@@ -20,5 +20,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByPhone(String phone);
 
-
+    @Query("SELECT r.townName FROM User AS u " +
+            "INNER JOIN Region AS r ON u.region.regionId = r.regionId " +
+            "WHERE u.userId = :userId")
+    public String getUserTownName(@Param("userId") int userId);
 }
