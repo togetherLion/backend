@@ -67,14 +67,14 @@ public class ChatService {
                 .build();
         chatRepository.save(chat);
 
-        // 해당 postId에서 ACCEPTED 상태인 사용자들 가져오기
-        List<User> acceptedUsers = waitingDealRepository.findUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
-
-        // 각 사용자들의 chat_id 필드 업데이트
-        for (User user : acceptedUsers) {
-            user.setChat(chat);
-            userRepository.save(user);
-        }
+//        // 해당 postId에서 ACCEPTED 상태인 사용자들 가져오기
+//        List<User> acceptedUsers = waitingDealRepository.findUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+//
+//        // 각 사용자들의 chat_id 필드 업데이트
+//        for (User user : acceptedUsers) {
+//            user.setChat(chat);
+//            userRepository.save(user);
+//        }
 
         return room;
     }

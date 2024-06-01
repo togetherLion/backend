@@ -19,6 +19,8 @@ public class ChatController {
 
     private final ChatService chatService;
 
+
+    //필요 없을듯.>>?
     @PostMapping
     public ChatRoom createRoom(@RequestParam String name, @RequestParam Integer postId) {
         return chatService.createRoom(name, postId);
