@@ -18,4 +18,5 @@ public class UserProfileRes {
     private boolean isFollowing;
     private int followerCount;
     private int followingCount;
+    private String townName;
 }
