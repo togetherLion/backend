@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.post.service;
 
+import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -75,7 +77,7 @@ public class PostService {
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음!"));
 
-        foundPost.update(postReq.productName(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price(), postReq.postPicture());
+        foundPost.update(postReq.productName(), postReq.dealState(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price(), postReq.postPicture());
         return foundPost;
     }
 
@@ -96,5 +98,10 @@ public class PostService {
 
     public List<PostRes> getPostsByUserId(int userId) {
         return postRepository.findPostResByUserId(userId);
+    }
+
+    public Optional<DealStateDto> getPostDealStateByPostId(int postId) {
+        Optional<Post> postOptional = postRepository.findByPostId(postId);
+        return postOptional.map(post -> new DealStateDto(post.getDealState(), post.getDealState().getMessage()));
     }
 }

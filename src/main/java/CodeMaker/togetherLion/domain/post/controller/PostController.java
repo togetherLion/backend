@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.post.controller;
 
+import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
@@ -76,6 +77,13 @@ public class PostController {
         // 세션 유틸리티를 사용하여 로그인한 사용자의 ID를 가져옵니다. (구현 필요)
         int userId = sessionUtil.getUserIdFromSession(request);
         return postService.getPostsByUserId(userId);
+    }
+
+    @GetMapping("/{postId}/deal-state")
+    public ResponseEntity<DealStateDto> getDealStateByPostId(@PathVariable int postId) {
+        return postService.getPostDealStateByPostId(postId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
