@@ -74,8 +74,9 @@ public class Post {
 
     }
 
-    public void update(String productName, String productContent, Integer dealNum, LocalDateTime deadlineDate,  Integer price, String postPicture) {
+    public void update(String productName, DealState dealState, String productContent, Integer dealNum, LocalDateTime deadlineDate,  Integer price, String postPicture) {
         if (productName != null) this.productName = productName;
+        if (dealState != null) this.dealState = dealState;
         if (productContent != null) this.productContent = productContent;
         if (dealNum != null) this.dealNum = dealNum;
         if (deadlineDate != null) this.deadlineDate = deadlineDate;

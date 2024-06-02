@@ -98,4 +98,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query("SELECT p.dealNum FROM Post p WHERE p.postId = :postId")
     Integer findDealNumByPostId(@Param("postId") int postId);
 
+
+    Optional<Post> findByPostId(int postId);
+
 }
