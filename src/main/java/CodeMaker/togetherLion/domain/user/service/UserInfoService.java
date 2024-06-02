@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -221,5 +223,21 @@ public class UserInfoService {
 
     public void deleteUser(int userId) {
         userRepository.deleteById(userId);
+    }
+
+    // 팔로워 목록 조회
+    public List<FollowerListRes> followerList(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
+
+        return followRepository.getFollowerList(user);
+    }
+
+    // 팔로잉 목록 조회
+    public List<FollowingListRes> followingList(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
+
+        return followRepository.getFollowingList(user);
     }
 }

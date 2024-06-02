@@ -2,14 +2,18 @@ package CodeMaker.togetherLion.domain.user.controller;
 
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
+import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -104,6 +108,19 @@ public class UserInfoController {
         return userInfoService.modifyProfile(modifyProfileReq, userId);
     }
 
+    // 팔로워 목록 조회
+    @GetMapping("/follower/{userId}")
+    public ResponseEntity<List<FollowerListRes>> followerList(@PathVariable int userId) {
+        List<FollowerListRes> list = userInfoService.followerList(userId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    // 팔로잉 목록 조회
+    @GetMapping("/following/{userId}")
+    public ResponseEntity<List<FollowingListRes>> followingList(@PathVariable int userId) {
+        List<FollowingListRes> list = userInfoService.followingList(userId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 
 
     // 회원탈퇴
