@@ -7,9 +7,12 @@ public record UserRes (
         String loginId,
         String name,
         String nickname,
-        String phone
+        String phone,
+        String account,
+        String profilePicture
+
 ) {
     public static UserRes fromEntity(User user) {
-        return new UserRes(user.getUserId(), user.getLoginId(), user.getName(), user.getNickname(), user.getPhone());
+        return new UserRes(user.getUserId(), user.getLoginId(), user.getName(), user.getNickname(), user.getPhone(), user.getAccount(), user.getProfilePicture());
     }
 }

@@ -7,7 +7,9 @@ import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
+import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealInfo;
 import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealReq;
+import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealRes;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
 import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
@@ -153,6 +155,25 @@ public class WaitingDealService {
                     .collect(Collectors.toList());
         }
         return List.of(); // 조건을 만족하지 않으면 빈 리스트 반환
+    }
+
+    public WaitingState getWaitingStateByPostIdAndUserId(int postId, int userId) {
+        Optional<WaitingDeal> waitingDeal = waitingDealRepository.findByUserIdAndPostId(userId, postId);
+        return waitingDeal.map(WaitingDeal::getWaitingState).orElse(null);
+    }
+
+    public WaitingDealInfo getWaitingDealInfoByPostId(int postId) {
+        List<WaitingDeal> waitingDeals = waitingDealRepository.findWaitingDealsByPostId(postId);
+
+        List<UserRes> users = waitingDeals.stream()
+                .map(waitingDeal -> UserRes.fromEntity(waitingDeal.getUser()))
+                .collect(Collectors.toList());
+
+        List<WaitingDealRes> waitingStates = waitingDeals.stream()
+                .map(WaitingDealRes::fromEntity)
+                .collect(Collectors.toList());
+
+        return new WaitingDealInfo(users, waitingStates);
     }
 
 }

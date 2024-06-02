@@ -8,6 +8,7 @@ import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
+import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealInfo;
 import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealReq;
 import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealRes;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
@@ -104,10 +105,21 @@ public class WaitingDealController {
         }
     }
 
-
     @GetMapping("/accepted-users")
     public List<UserRes> getAcceptedUsersByPostId(@RequestParam int postId) {
         return waitingDealService.getAcceptedUsersByPostId(postId);
     }
+
+    @GetMapping("/my-waiting-state")
+    public WaitingState getWaitingStateByPostIdAndUserId(@RequestParam int postId, HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return waitingDealService.getWaitingStateByPostIdAndUserId(postId, userId);
+    }
+
+    @GetMapping("/waiting-deals/info")
+    public WaitingDealInfo getWaitingDealInfoByPostId(@RequestParam int postId) {
+        return waitingDealService.getWaitingDealInfoByPostId(postId);
+    }
+
 
 }
