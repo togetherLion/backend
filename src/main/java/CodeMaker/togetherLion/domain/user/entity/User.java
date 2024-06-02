@@ -1,6 +1,7 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
+import CodeMaker.togetherLion.domain.good.entity.Good;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.usersearch.entity.UserSearch;
@@ -81,6 +82,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserSearch> userSearches = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Good> good = new ArrayList<>();
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "chat_id")
