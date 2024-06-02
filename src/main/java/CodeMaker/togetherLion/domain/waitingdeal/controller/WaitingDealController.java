@@ -62,6 +62,16 @@ public class WaitingDealController {
         }
     }
 
+    @PutMapping("/reject")
+    public ResponseEntity<?> rejectWaitingDeal(@RequestParam int userId, @RequestParam int postId) {
+        try {
+            waitingDealService.updateWaitingDealStateToReject(userId, postId);
+            return ResponseEntity.ok().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/useraccepted/{postId}")
     public ResponseEntity<List<UserRes>> getUsersByPostIdAndWaitingStateAccepted(@PathVariable Integer postId) {
         List<UserRes> userResponses = waitingDealService.getUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
@@ -95,5 +105,9 @@ public class WaitingDealController {
     }
 
 
+    @GetMapping("/accepted-users")
+    public List<UserRes> getAcceptedUsersByPostId(@RequestParam int postId) {
+        return waitingDealService.getAcceptedUsersByPostId(postId);
+    }
 
 }

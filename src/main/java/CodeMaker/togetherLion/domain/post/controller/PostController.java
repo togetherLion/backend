@@ -69,4 +69,14 @@ public class PostController {
         List<PostRes> posts = postService.getRegionPosts(userId);
         return ResponseEntity.ok(posts);
     }
+
+
+    @GetMapping("/my")
+    public List<PostRes> getPostsByUserId(HttpServletRequest request) {
+        // 세션 유틸리티를 사용하여 로그인한 사용자의 ID를 가져옵니다. (구현 필요)
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return postService.getPostsByUserId(userId);
+    }
+
+
 }

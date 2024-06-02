@@ -93,4 +93,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+
+    public List<PostRes> getPostsByUserId(int userId) {
+        return postRepository.findPostResByUserId(userId);
+    }
 }

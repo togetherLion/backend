@@ -5,6 +5,7 @@ import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.usersearch.entity.UserSearch;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;

@@ -1,11 +1,14 @@
 package CodeMaker.togetherLion.domain.post.repository;
 
+import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
@@ -80,4 +83,19 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "ORDER BY p.price DESC")
     List<Post> searchPostPriceZone(@Param("userId") int userId, @Param("searchText") String searchText,
                                   @Param("lowPrice") int lowPrice, @Param("highPrice") int highPrice);
+
+    @Query(value = "SELECT p FROM Post p WHERE p.user.userId = :userId")
+    List<Post> findPostsByUserId(@Param("userId") int userId);
+
+    // DTO 변환 로직 포함 메소드 추가
+    default List<PostRes> findPostResByUserId(int userId) {
+        // 원래 메소드를 호출하여 결과를 받아옴
+        List<Post> posts = findPostsByUserId(userId);
+        // 결과를 PostRes DTO로 변환
+        return posts.stream().map(PostRes::fromEntity).collect(Collectors.toList());
+    }
+
+    @Query("SELECT p.dealNum FROM Post p WHERE p.postId = :postId")
+    Integer findDealNumByPostId(@Param("postId") int postId);
+
 }

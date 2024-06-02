@@ -4,6 +4,7 @@ import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.post.model.DealState;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 

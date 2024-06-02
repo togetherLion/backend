@@ -101,6 +101,15 @@ public class WaitingDealService {
         }
     }
 
+    @Transactional
+    public void updateWaitingDealStateToReject(int userId, int postId) {
+        Optional<WaitingDeal> waitingDealOptional = waitingDealRepository.findByUserIdAndPostId(userId, postId);
+        WaitingDeal waitingDeal = waitingDealOptional.get();
+        waitingDeal.update(WaitingState.REJECTED);
+        waitingDealRepository.save(waitingDeal);
+
+    }
+
     public Map<String, Object> canCreateChatRoom(int postId, HttpServletRequest request) {
         // 현재 ACCEPTED 상태의 WaitingDeal 수를 가져옴
         int acceptedCount = waitingDealRepository.countByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
@@ -130,6 +139,20 @@ public class WaitingDealService {
         } else {
             throw new EntityNotFoundException("Post not found with id: " + postId);
         }
+    }
+
+
+    public List<UserRes> getAcceptedUsersByPostId(int postId) {
+
+        Integer dealNum = postRepository.findDealNumByPostId(postId);
+        int acceptedCount = waitingDealRepository.countByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+        if (acceptedCount == dealNum) {
+            return waitingDealRepository.findUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED)
+                    .stream()
+                    .map(UserRes::fromEntity) // User 엔티티를 UserRes로 변환합니다.
+                    .collect(Collectors.toList());
+        }
+        return List.of(); // 조건을 만족하지 않으면 빈 리스트 반환
     }
 
 }
