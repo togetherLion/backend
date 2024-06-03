@@ -81,11 +81,11 @@ public class UserInfoController {
     }
 
     // 회원 탈퇴 : 지수 - 완료
-    @PostMapping("/unregister")
-    public UnregisterRes unregister(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request) {
-        int userId = sessionUtil.getUserIdFromSession(request);
-        return userInfoService.unregister(unregisterReq, userId);
-    }
+//    @PostMapping("/unregister")
+//    public UnregisterRes unregister(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        return userInfoService.unregister(unregisterReq, userId);
+//    }
 
     // 내 프로필 조회 : 지수
 //    @PostMapping("/myProfile")
@@ -125,9 +125,9 @@ public class UserInfoController {
 
     // 회원탈퇴
     @DeleteMapping("/unregister")
-    public ResponseEntity<?> deleteUser(HttpServletRequest request){
+    public ResponseEntity<?> deleteUser(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request){
         int userId = sessionUtil.getUserIdFromSession(request);
-        userInfoService.deleteUser(userId);
+        userInfoService.deleteUser(unregisterReq, userId);
         return ResponseEntity.ok().build();
     }
 

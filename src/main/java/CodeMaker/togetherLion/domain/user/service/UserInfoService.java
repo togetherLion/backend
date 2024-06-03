@@ -140,21 +140,21 @@ public class UserInfoService {
     }
 
     // 회원 탈퇴 : 지수 - 완료
-    public UnregisterRes unregister(UnregisterReq unregisterReq, int userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
-
-        if(!unregisterReq.getPassword().equals(user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-
-        user.setUserState(false);
-        userRepository.save(user);
-
-        return UnregisterRes.builder()
-                .userId(user.getUserId())
-                .build();
-    }
+//    public UnregisterRes unregister(UnregisterReq unregisterReq, int userId) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
+//
+//        if(!unregisterReq.getPassword().equals(user.getPassword())) {
+//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        user.setUserState(false);
+//        userRepository.save(user);
+//
+//        return UnregisterRes.builder()
+//                .userId(user.getUserId())
+//                .build();
+//    }
 
     // 내 프로필 조회 : 지수
     public MyProfileRes myProfile(int userId) {
@@ -222,7 +222,14 @@ public class UserInfoService {
                 .build();
     }
 
-    public void deleteUser(int userId) {
+    public void deleteUser(UnregisterReq unregisterReq, int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 userId입니다."));
+
+        if(!unregisterReq.getPassword().equals(user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
         userRepository.deleteById(userId);
     }
 
