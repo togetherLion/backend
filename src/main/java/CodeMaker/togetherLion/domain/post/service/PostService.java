@@ -1,10 +1,15 @@
 package CodeMaker.togetherLion.domain.post.service;
 
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
+import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
+import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
+import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
+import CodeMaker.togetherLion.domain.user.dto.userInfo.response.FollowerListRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
@@ -32,14 +37,16 @@ public class PostService {
     private final UserRepository userRepository;
     private final SessionUtil sessionUtil;
     private final WaitingDealRepository waitingDealRepository;
+    private final FollowRepository followRepository;
+    private final AlarmService alarmService;
 
     public Post createPost(Post post, HttpServletRequest request) {
 
         int userId = sessionUtil.getUserIdFromSession(request);
         LocalDateTime now = LocalDateTime.now();
 
-        User user = new User();
-        user.setUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
         post.setUser(user);
         post.setUploadDate(now);
@@ -55,6 +62,14 @@ public class PostService {
                 .build();
 
         waitingDealRepository.save(waitingDeal);
+
+
+        // 팔로워에게 새 글 알림 전송
+        List<Integer> userIdList = followRepository.getFollowerIdList(user);
+        String msg = user.getNickname() + "님의 새로운 글이 등록되었습니다.";
+
+        AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.NEWPOST, savedPost.getPostId());
+        alarmService.newAlarmMany(alarmDto);
 
         return savedPost;
     }

@@ -1,8 +1,10 @@
 package CodeMaker.togetherLion.domain.alarm.service;
 
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmRes;
 import CodeMaker.togetherLion.domain.alarm.entity.Alarm;
+import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.repository.AlarmRepository;
 import CodeMaker.togetherLion.domain.complain.service.ComplainService;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -32,6 +34,25 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         return alarm;
+    }
+
+    // 알림 등록 (여러 사용자)
+    public void newAlarmMany(AlarmDto alarmDto) {
+        for (int userId : alarmDto.getUserIdList()) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+            Alarm alarm = Alarm.builder()
+                    .alarmCheck(false)
+                    .alarmDate(LocalDateTime.now())
+                    .alarmMsg(alarmDto.getAlarmMsg())
+                    .alarmType(alarmDto.getAlarmType())
+                    .connectId(alarmDto.getConnectId())
+                    .user(user)
+                    .build();
+
+            alarmRepository.save(alarm);
+        }
     }
 
     // 알림 목록

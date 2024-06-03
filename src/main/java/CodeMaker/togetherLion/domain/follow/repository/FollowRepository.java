@@ -34,6 +34,11 @@ public interface FollowRepository extends JpaRepository<Follow, Integer> {
             "AND u.userState = true")
     List<FollowerListRes> getFollowerList(@Param("followedUser") User followedUser);
 
+    // 팔로워 userId 조회
+    @Query("SELECT followingUser.userId FROM Follow " +
+            "WHERE followedUser = :followedUser")
+    List<Integer> getFollowerIdList(@Param("followedUser") User followedUser);
+
     // 팔로잉 수 조회
     @Query("SELECT COUNT(*) FROM Follow f " +
             "JOIN User u ON f.followedUser = u " +
