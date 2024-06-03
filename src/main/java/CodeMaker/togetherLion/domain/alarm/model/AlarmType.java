@@ -11,7 +11,8 @@ public enum AlarmType {
     REQACCEPT("공동구매 수락"),
     REQREJECT("공동구매 거절"),
     POSTMODIFY("글 수정"),
-    POSTDELETE("글 삭제");
+    POSTDELETE("글 삭제"),
+    CREATECHAT("채팅방 생성");
 
     private final String msg;
 

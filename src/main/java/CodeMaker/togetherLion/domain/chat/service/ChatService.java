@@ -1,5 +1,8 @@
 package CodeMaker.togetherLion.domain.chat.service;
 
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
+import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
+import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
@@ -31,6 +34,7 @@ public class ChatService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final WaitingDealRepository waitingDealRepository;
+    private final AlarmService alarmService;
 
 
     @PostConstruct
@@ -67,7 +71,7 @@ public class ChatService {
                 .build();
         chatRepository.save(chat);
 
-//        // 해당 postId에서 ACCEPTED 상태인 사용자들 가져오기
+        // 해당 postId에서 ACCEPTED 상태인 사용자들 가져오기
 //        List<User> acceptedUsers = waitingDealRepository.findUsersByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
 //
 //        // 각 사용자들의 chat_id 필드 업데이트
@@ -99,6 +103,12 @@ public class ChatService {
 
             // dealNum과 acceptedCount가 같으면 채팅방 생성
             if (dealNum == acceptedCount) {
+                // 채팅방 생성 알림 보내기
+                String msg = "[" + post.getProductName() + "] 채팅방이 생성되었습니다.";
+                List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+                AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.CREATECHAT, postId);
+                alarmService.newAlarmMany(alarmDto);
+
                 return Optional.of(createRoom(roomName, postId));
             }
         }
