@@ -1,6 +1,7 @@
 package CodeMaker.togetherLion.domain.post.controller;
 
 import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
+import CodeMaker.togetherLion.domain.post.dto.GetPostDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
@@ -66,16 +67,22 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    // 사용자가 속한 지역 게시글 조회 (메인 화면)
-    @GetMapping("/region")
-    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
+    @GetMapping("/by-region")
+    public List<GetPostDto> getPostsByRegion(HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
-        List<PostRes> posts = postService.getRegionPosts(userId);
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("posts", posts);
-        param.put("townName", userInfoService.getTownName(userId));
-        return ResponseEntity.ok(param);
+        return postService.getPostsByRegionAndUserId(userId);
     }
+
+//    // 사용자가 속한 지역 게시글 조회 (메인 화면)
+//    @GetMapping("/region")
+//    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        List<PostRes> posts = postService.getRegionPosts(userId);
+//        HashMap<String, Object> param = new HashMap<>();
+//        param.put("posts", posts);
+//        param.put("townName", userInfoService.getTownName(userId));
+//        return ResponseEntity.ok(param);
+//    }
 
 
     @GetMapping("/my")
