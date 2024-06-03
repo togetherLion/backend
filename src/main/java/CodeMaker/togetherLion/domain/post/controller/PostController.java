@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.post.controller;
 
+import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;

@@ -1,6 +1,7 @@
 package CodeMaker.togetherLion.domain.post.service;
 
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
@@ -91,13 +92,28 @@ public class PostService {
     public Post updatePost(Integer postId, PostReq postReq) {
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음!"));
-
         foundPost.update(postReq.productName(), postReq.dealState(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price(), postReq.postPicture());
+
+        // 공동구매 참여자들에게 글 수정 알림 전송
+        String msg = "[" + foundPost.getProductName() + "] 공동 구매 참여 중인 게시글이 수정되었습니다.";
+        List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(foundPost.getPostId(), WaitingState.ACCEPTED);
+        AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.POSTMODIFY, postId);
+        alarmService.newAlarmMany(alarmDto);
+
         return foundPost;
     }
 
     @Transactional
     public void deletePost(Integer postId) {
+
+        // 공동구매 참여자들에게 글 수정 알림 전송
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 postId입니다."));
+        String msg = "[" + post.getProductName() + "] 공동 구매 참여 중인 게시글이 삭제되었습니다.";
+        List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(post.getPostId(), WaitingState.ACCEPTED);
+        AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.POSTDELETE, postId);
+        alarmService.newAlarmMany(alarmDto);
+
         postRepository.deleteById(postId);
     }
 
