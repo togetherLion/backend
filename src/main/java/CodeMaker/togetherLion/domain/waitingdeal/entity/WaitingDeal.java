@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-
 @Data
 public class WaitingDeal {
 

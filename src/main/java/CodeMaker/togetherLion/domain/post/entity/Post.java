@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.post.entity;
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.good.entity.Good;
 import CodeMaker.togetherLion.domain.post.model.DealState;
+import CodeMaker.togetherLion.domain.review.entity.Review;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -28,11 +29,14 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<WaitingDeal> waitingDeals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Good> good = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Chat> chat = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Review> review = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
