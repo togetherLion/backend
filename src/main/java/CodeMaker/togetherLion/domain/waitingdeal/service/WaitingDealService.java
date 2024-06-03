@@ -86,6 +86,7 @@ public class WaitingDealService {
                 .collect(Collectors.toList());
     }
 
+    // 참여 요청 수락
     @Transactional
     public void updateWaitingDealStateToAccepted(int userId, int postId) {
         Optional<WaitingDeal> waitingDealOptional = waitingDealRepository.findByUserIdAndPostId(userId, postId);
@@ -106,6 +107,13 @@ public class WaitingDealService {
                 if (acceptedCount < dealNum) {
                     waitingDeal.update(WaitingState.ACCEPTED);
                     waitingDealRepository.save(waitingDeal);
+
+                    // 참여 요청 수락 알림
+                    String msg = "[" + post.getProductName() + "] 참여 요청이 수락되었습니다.";
+                    AlarmReq alarmReq = new AlarmReq(msg, LocalDateTime.now(), false,
+                            AlarmType.REQACCEPT, postId, userId);
+                    alarmService.newAlarm(alarmReq);
+
                 } else {
                     throw new IllegalStateException("해당 Post에 대한 WaitingDeal의 ACCEPTED 상태의 개수가 dealNum을 초과하였습니다.");
                 }
@@ -117,12 +125,22 @@ public class WaitingDealService {
         }
     }
 
+    // 참여 요청 거절
     @Transactional
     public void updateWaitingDealStateToReject(int userId, int postId) {
         Optional<WaitingDeal> waitingDealOptional = waitingDealRepository.findByUserIdAndPostId(userId, postId);
         WaitingDeal waitingDeal = waitingDealOptional.get();
         waitingDeal.update(WaitingState.REJECTED);
         waitingDealRepository.save(waitingDeal);
+
+        // 참여 요청 거절 알림
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 postId입니다."));
+        String msg = "[" + post.getProductName() + "] 참여 요청이 거절되었습니다.";
+
+        AlarmReq alarmReq = new AlarmReq(msg, LocalDateTime.now(), false,
+                AlarmType.REQREJECT, postId, userId);
+        alarmService.newAlarm(alarmReq);
 
     }
 
