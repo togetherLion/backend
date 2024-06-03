@@ -6,6 +6,7 @@ import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
+import CodeMaker.togetherLion.domain.post.dto.GetPostDto;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
@@ -117,14 +118,24 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
-    // 사용자가 속한 지역 게시글 조회 (메인 화면)
-    public List<PostRes> getRegionPosts(int userId) {
-
+    @Transactional(readOnly = true)
+    public List<GetPostDto> getPostsByRegionAndUserId(int userId) {
         List<Post> posts = postRepository.findPostByRegion(userId);
-        return posts.stream()
-                .map(PostRes::fromEntity)
-                .collect(Collectors.toList());
+        return posts.stream().map(post -> {
+            int waitingDealsCount = waitingDealRepository.countByPostIdAndWaitingState(post.getPostId(), WaitingState.ACCEPTED);
+            PostRes postRes = PostRes.fromEntity(post);
+            return new GetPostDto(postRes, waitingDealsCount);
+        }).collect(Collectors.toList());
     }
+
+//    // 사용자가 속한 지역 게시글 조회 (메인 화면)
+//    public List<PostRes> getRegionPosts(int userId) {
+//
+//        List<Post> posts = postRepository.findPostByRegion(userId);
+//        return posts.stream()
+//                .map(PostRes::fromEntity)
+//                .collect(Collectors.toList());
+//    }
 
 
     public List<PostRes> getPostsByUserId(int userId) {
