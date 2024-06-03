@@ -96,7 +96,7 @@ public class PostService {
         foundPost.update(postReq.productName(), postReq.dealState(), postReq.productContent(), postReq.dealNum(), postReq.deadlineDate(), postReq.price(), postReq.postPicture());
 
         // 공동구매 참여자들에게 글 수정 알림 전송
-        String msg = "[" + foundPost.getProductName() + "] 공동 구매 참여 중인 게시글이 수정되었습니다.";
+        String msg = "[" + foundPost.getProductName() + "] 게시글이 수정되었습니다.";
         List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(foundPost.getPostId(), WaitingState.ACCEPTED);
         AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.POSTMODIFY, postId);
         alarmService.newAlarmMany(alarmDto);
@@ -110,7 +110,7 @@ public class PostService {
         // 공동구매 참여자들에게 글 수정 알림 전송
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 postId입니다."));
-        String msg = "[" + post.getProductName() + "] 공동 구매 참여 중인 게시글이 삭제되었습니다.";
+        String msg = "[" + post.getProductName() + "] 게시글이 삭제되었습니다.";
         List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(post.getPostId(), WaitingState.ACCEPTED);
         AlarmDto alarmDto = new AlarmDto(userIdList, msg, AlarmType.POSTDELETE, postId);
         alarmService.newAlarmMany(alarmDto);

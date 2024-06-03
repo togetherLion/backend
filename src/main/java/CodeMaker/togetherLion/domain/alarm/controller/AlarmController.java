@@ -38,7 +38,7 @@ public class AlarmController {
     }
 
     // 알림 읽기
-    @PutMapping("/check")
+    @PostMapping("/check")
     public ResponseEntity<AlarmType> checkAlarm(@RequestParam int alarmId) {
         AlarmType alarmType = alarmService.checkAlarm(alarmId);
         return ResponseEntity.ok(alarmType);
