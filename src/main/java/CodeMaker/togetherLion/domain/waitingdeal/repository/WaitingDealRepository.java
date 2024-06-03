@@ -33,6 +33,11 @@ public interface WaitingDealRepository extends JpaRepository<WaitingDeal, Intege
     @Query("SELECT wd FROM WaitingDeal wd WHERE wd.post.postId = :postId")
     List<WaitingDeal> findWaitingDealsByPostId(@Param("postId") int postId);
 
+    // 참여 중인 공동구매의 방장 userId
+    @Query("SELECT p.user.userId FROM WaitingDeal w " +
+            "INNER JOIN Post p ON w.post = p " +
+            "WHERE w.post = :post")
+    int findWaitingDealUserId(@Param("post") Post post);
 
 }
 

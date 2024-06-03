@@ -7,6 +7,7 @@ public enum AlarmType {
 
     COMPLAIN("신고 중첩"),
     NEWPOST("새 글 등록"),
+    REQUEST("참여 요청"),
     REQACCEPT("공동구매 수락"),
     REQREJECT("공동구매 거절"),
     POSTMODIFY("글 수정"),

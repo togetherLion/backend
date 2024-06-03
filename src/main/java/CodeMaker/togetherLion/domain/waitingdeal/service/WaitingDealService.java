@@ -1,5 +1,8 @@
 package CodeMaker.togetherLion.domain.waitingdeal.service;
 
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
+import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
+import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
@@ -37,6 +40,7 @@ public class WaitingDealService {
     private final SessionUtil sessionUtil;
     private final WaitingDealRepository waitingDealRepository;
     private final ChatRepository chatRepository;
+    private final AlarmService alarmService;
 
     public WaitingDeal createWaitingDeal(WaitingDealReq waitingDealReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
@@ -49,8 +53,8 @@ public class WaitingDealService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        User user = new User();
-        user.setUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
 
         Post post = postRepository.findById(waitingDealReq.postId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + waitingDealReq.postId()));
@@ -61,6 +65,16 @@ public class WaitingDealService {
                 .requestDate(now)
                 .waitingState(WaitingState.PENDING)
                 .build();
+
+
+        // 공동구매 진행자에게 참여 요청 알림 전송
+        int leaderId = waitingDealRepository.findWaitingDealUserId(post);
+        String msg = "[" + post.getProductName() + "] " + user.getNickname() + "님이 참여 요청을 보냈습니다.";
+
+        AlarmReq alarmReq = new AlarmReq(msg, LocalDateTime.now(), false, AlarmType.REQUEST,
+                post.getPostId(), leaderId);
+        alarmService.newAlarm(alarmReq);
+
 
         return waitingDealRepository.save(waitingDeal);
     }
