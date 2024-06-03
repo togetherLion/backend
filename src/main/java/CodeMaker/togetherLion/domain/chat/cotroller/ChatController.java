@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.chat.cotroller;
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.service.ChatService;
 import CodeMaker.togetherLion.domain.cheat.repository.CheatRepository;
+import CodeMaker.togetherLion.domain.cheat.service.CheatService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class ChatController {
 
     private final ChatService chatService;
     private final SessionUtil sessionUtil;
+    private final CheatService cheatService;
 
 
     //필요 없을듯.>>?
@@ -49,12 +51,12 @@ public class ChatController {
     }
 
     // 계좌 전송 및 사기 전적
-//    @GetMapping
-//    public ResponseEntity<HashMap<String, Object>> sendAccount(HttpServletRequest request) {
-//        int userId = sessionUtil.getUserIdFromSession(request);
-//        HashMap<String, Object> params = new HashMap<>();
-//        params.put("account", chatService.sendAccount(userId));
-//
-//        return null;
-//    }
+    @GetMapping("/account")
+    public ResponseEntity<HashMap<String, Object>> sendAccount(HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("account", chatService.sendAccount(userId));
+        params.put("cheatMsg", cheatService.searchCheat(userId));
+        return ResponseEntity.ok(params);
+    }
 }
