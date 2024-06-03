@@ -11,6 +11,7 @@ import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class GoodService {
         Post post = postRepository.findByPostId(goodReq.postId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음!"));
 
+        // 이미 같은 유저와 포스트에 대한 좋아요가 있는지 확인
+        if (goodRepository.findByUserIdAndPostId(goodReq.userId(), goodReq.postId()).isPresent()) {
+            throw new IllegalArgumentException("이미 좋아요를 누른 게시글입니다.");
+        }
+
         // Good 객체 생성 시 likeCheck 값을 여기서 직접 true로 설정
         Good good = Good.builder()
                 .user(user)
@@ -42,24 +48,22 @@ public class GoodService {
     }
 
 
-    public void updateLikeCheck(int userId, int postId) {
+    @Transactional
+    public void deleteGood(int userId, int postId) {
         Good good = goodRepository.findByUserIdAndPostId(userId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 좋아요를 찾을 수 없습니다."));
-
-        good.update(false);
-        goodRepository.save(good);
-    }
-
-    public void againLikeCheckToFalse(int userId, int postId) {
-        Good good = goodRepository.findByUserIdAndPostId(userId, postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 좋아요를 찾을 수 없습니다."));
-
-        good.update(true);
-        goodRepository.save(good);
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저와 포스트에 해당하는 좋아요가 존재하지 않습니다."));
+        goodRepository.delete(good);
     }
 
     public List<Post> findLikedPostsByUserId(int userId) {
         return goodRepository.findLikedPostsByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isLiked(int userId, int postId) {
+        return goodRepository.findByUserIdAndPostId(userId, postId)
+                .map(Good::isLikeCheck)
+                .orElse(false);
     }
 
 }

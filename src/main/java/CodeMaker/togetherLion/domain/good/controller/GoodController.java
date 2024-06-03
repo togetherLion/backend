@@ -42,19 +42,12 @@ public class GoodController {
         }
     }
 
-    @PutMapping("/cancellike/{postId}")
-    public String updateLikeCheckToFalse(HttpServletRequest request, @PathVariable int postId) {
-        int userId = sessionUtil.getUserIdFromSession(request);
-        goodService.updateLikeCheck(userId, postId);
-        return "찜취소";
+    @DeleteMapping
+    public void deleteGood(HttpServletRequest request, @RequestParam int postId) {
+        int userId = sessionUtil.getUserIdFromSession(request); // 세션에서 userId 가져오기
+        goodService.deleteGood(userId, postId);
     }
 
-    @PutMapping("/againlike/{postId}")
-    public String againLikeCheckToFalse(HttpServletRequest request, @PathVariable int postId) {
-        int userId = sessionUtil.getUserIdFromSession(request);
-        goodService.againLikeCheckToFalse(userId, postId);
-        return "찜하기";
-    }
 
     @GetMapping("/liked")
     public ResponseEntity<List<PostRes>> getLikedPosts(HttpServletRequest request) {
@@ -64,4 +57,9 @@ public class GoodController {
         return ResponseEntity.ok(postResponses);
     }
 
+    @GetMapping("/isLiked")
+    public boolean isLiked(HttpServletRequest request, @RequestParam int postId) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return goodService.isLiked(userId, postId);
+    }
 }
