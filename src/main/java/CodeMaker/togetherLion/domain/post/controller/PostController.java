@@ -67,22 +67,17 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/by-region")
-    public List<GetPostDto> getPostsByRegion(HttpServletRequest request) {
-        int userId = sessionUtil.getUserIdFromSession(request);
-        return postService.getPostsByRegionAndUserId(userId);
-    }
 
-//    // 사용자가 속한 지역 게시글 조회 (메인 화면)
-//    @GetMapping("/region")
-//    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
-//        int userId = sessionUtil.getUserIdFromSession(request);
-//        List<PostRes> posts = postService.getRegionPosts(userId);
-//        HashMap<String, Object> param = new HashMap<>();
-//        param.put("posts", posts);
-//        param.put("townName", userInfoService.getTownName(userId));
-//        return ResponseEntity.ok(param);
-//    }
+    // 사용자가 속한 지역 게시글 조회 (메인 화면)
+    @GetMapping("/region")
+    public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        List<GetPostDto> posts = postService.getPostsByRegionAndUserId(userId);
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("posts", posts);
+        param.put("townName", userInfoService.getTownName(userId));
+        return ResponseEntity.ok(param);
+    }
 
 
     @GetMapping("/my")
