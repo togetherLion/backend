@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.alarm.controller;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmRes;
 import CodeMaker.togetherLion.domain.alarm.entity.Alarm;
+import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,12 @@ public class AlarmController {
         int userId = sessionUtil.getUserIdFromSession(request);
         List<AlarmRes> alarmRes = alarmService.alarmList(userId);
         return ResponseEntity.ok(alarmRes);
+    }
+
+    // 알림 읽기
+    @PutMapping("/check")
+    public ResponseEntity<AlarmType> checkAlarm(@RequestParam int alarmId) {
+        AlarmType alarmType = alarmService.checkAlarm(alarmId);
+        return ResponseEntity.ok(alarmType);
     }
 }

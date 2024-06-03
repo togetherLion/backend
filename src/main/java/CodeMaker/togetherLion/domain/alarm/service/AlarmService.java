@@ -66,4 +66,15 @@ public class AlarmService {
                 .map(AlarmRes::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    // 알림 읽기
+    public AlarmType checkAlarm(int alarmId) {
+        Alarm alarm = alarmRepository.findById(alarmId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 alarmId입니다."));
+
+        alarm.setAlarmCheck(true);
+        alarmRepository.save(alarm);
+
+        return alarm.getAlarmType();
+    }
 }
