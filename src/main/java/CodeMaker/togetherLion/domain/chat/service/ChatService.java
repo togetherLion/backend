@@ -104,4 +104,10 @@ public class ChatService {
         }
         return Optional.empty();
     }
+
+    // 계좌 전송
+    public String sendAccount(int userId) {
+        return userRepository.getAccount(userId);
+    }
+
 }

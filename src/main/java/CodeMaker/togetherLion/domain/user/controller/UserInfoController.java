@@ -125,10 +125,10 @@ public class UserInfoController {
 
     // 회원탈퇴
     @DeleteMapping("/unregister")
-    public ResponseEntity<?> deleteUser(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request){
+    public ResponseEntity<String> deleteUser(@RequestBody UnregisterReq unregisterReq, HttpServletRequest request){
         int userId = sessionUtil.getUserIdFromSession(request);
         userInfoService.deleteUser(unregisterReq, userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("회원 탈퇴 성공!!!!");
     }
 
 }

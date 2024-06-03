@@ -2,13 +2,18 @@ package CodeMaker.togetherLion.domain.chat.cotroller;
 
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.service.ChatService;
+import CodeMaker.togetherLion.domain.cheat.repository.CheatRepository;
+import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -18,6 +23,7 @@ import java.util.Optional;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SessionUtil sessionUtil;
 
 
     //필요 없을듯.>>?
@@ -41,4 +47,14 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chat room not created. Conditions not met.");
         }
     }
+
+    // 계좌 전송 및 사기 전적
+//    @GetMapping
+//    public ResponseEntity<HashMap<String, Object>> sendAccount(HttpServletRequest request) {
+//        int userId = sessionUtil.getUserIdFromSession(request);
+//        HashMap<String, Object> params = new HashMap<>();
+//        params.put("account", chatService.sendAccount(userId));
+//
+//        return null;
+//    }
 }

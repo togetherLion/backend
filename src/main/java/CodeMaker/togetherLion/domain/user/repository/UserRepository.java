@@ -24,4 +24,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "INNER JOIN Region AS r ON u.region.regionId = r.regionId " +
             "WHERE u.userId = :userId")
     public String getUserTownName(@Param("userId") int userId);
+
+    @Query("SELECT u.account FROM User As u " +
+            "WHERE u.userId = :userId")
+    public String getAccount(@Param("userId") int userId);
 }
