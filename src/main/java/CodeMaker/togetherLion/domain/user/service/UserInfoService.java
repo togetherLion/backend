@@ -248,4 +248,9 @@ public class UserInfoService {
 
         return followRepository.getFollowingList(user);
     }
+
+    // 동네 조회
+    public String getTownName(int userId) {
+        return userRepository.getUserTownName(userId);
+    }
 }

@@ -5,6 +5,7 @@ import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
+import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,7 @@ public class PostController {
 
     private final PostService postService;
     private final SessionUtil sessionUtil;
+    private final UserInfoService userInfoService;
 
     @PostMapping("")
     public ResponseEntity<PostRes> createPost(@RequestBody Post post, HttpServletRequest request) {
@@ -68,7 +71,10 @@ public class PostController {
     public ResponseEntity<?> getRegionPosts(HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
         List<PostRes> posts = postService.getRegionPosts(userId);
-        return ResponseEntity.ok(posts);
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("posts", posts);
+        param.put("townName", userInfoService.getTownName(userId));
+        return ResponseEntity.ok(param);
     }
 
 
