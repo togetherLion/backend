@@ -20,6 +20,7 @@ public class ComplainController {
 
     private final ComplainService complainService;
 
+    // 신고하기
     @PostMapping("")
     public ResponseEntity<ComplainRes> creatComplain(@RequestBody ComplainReq complainReq, HttpServletRequest request) {
         Complain createComplain = complainService.creatComplain(complainReq, request);

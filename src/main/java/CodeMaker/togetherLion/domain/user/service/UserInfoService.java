@@ -194,6 +194,7 @@ public class UserInfoService {
                 .followerCount(followRepository.countFollower(user))
                 .followingCount(followRepository.countFollowing(user))
                 .townName(userRepository.getUserTownName(user.getUserId()))
+                .complainCount(user.getComplainCount())
                 .build();
     }
 

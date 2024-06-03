@@ -19,4 +19,5 @@ public class UserProfileRes {
     private int followerCount;
     private int followingCount;
     private String townName;
+    private int complainCount;
 }

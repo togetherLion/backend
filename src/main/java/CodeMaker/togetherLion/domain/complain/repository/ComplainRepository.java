@@ -15,4 +15,5 @@ public interface ComplainRepository extends JpaRepository<Complain, Integer> {
             "WHERE c.targetUser = :targetUser " +
             "GROUP BY c.complainCategory")
     public List<Object[]> getUserComplain(@Param("targetUser")User targetUser);
+
 }
