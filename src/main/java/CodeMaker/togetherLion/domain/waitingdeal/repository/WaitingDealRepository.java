@@ -17,6 +17,8 @@ import java.util.Optional;
 
 
 public interface WaitingDealRepository extends JpaRepository<WaitingDeal, Integer> {
+
+    // 참여 중인 사람들
     @Query("SELECT wd.user FROM WaitingDeal wd WHERE wd.post.postId = :postId AND wd.waitingState = :waitingState ORDER BY wd.requestDate DESC")
     List<User> findUsersByPostIdAndWaitingState(@Param("postId") int postId, @Param("waitingState") WaitingState waitingState);
 

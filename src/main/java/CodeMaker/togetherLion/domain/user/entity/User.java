@@ -2,6 +2,7 @@ package CodeMaker.togetherLion.domain.user.entity;
 
 import CodeMaker.togetherLion.domain.alarm.entity.Alarm;
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
+import CodeMaker.togetherLion.domain.follow.entity.Follow;
 import CodeMaker.togetherLion.domain.good.entity.Good;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
@@ -89,6 +90,14 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Alarm> alarms = new ArrayList<>();
+
+    // 사용자를 팔로우하는 관계
+    @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL)
+    private List<Follow> followers = new ArrayList<>();
+
+    // 사용자가 팔로우하는 관계
+    @OneToMany(mappedBy = "followingUser", cascade = CascadeType.ALL)
+    private List<Follow> following = new ArrayList<>();
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "chat_id")
