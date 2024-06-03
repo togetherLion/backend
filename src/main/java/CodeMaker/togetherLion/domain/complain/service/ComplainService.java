@@ -51,8 +51,11 @@ public class ComplainService {
 
         // 신고 당한 횟수 5번이면 경고 알림
         if(targetUser.getComplainCount() == 5) {
-            // 알림 보내는 코드
-            sendComplainAlarm(targetUser);
+            String msg = complainReason(targetUser);
+            AlarmReq alarmReq = new AlarmReq("신고 누적 횟수 5회입니다. " + msg,
+                    LocalDateTime.now(), false, AlarmType.COMPLAIN, 0, targetUser.getUserId());
+
+            alarmService.newAlarm(alarmReq);
         }
 
         // 신고 당한 횟수가 10번 이상이면 비활성화
@@ -85,12 +88,4 @@ public class ComplainService {
         return message.toString();
     }
 
-    // 신고 5회 알림 전송
-    private void sendComplainAlarm(User user) {
-        String msg = complainReason(user);
-        AlarmReq alarmReq = new AlarmReq("신고 누적 횟수 5회입니다. " + msg,
-                LocalDateTime.now(), false, AlarmType.COMPLAIN, 0, user.getUserId());
-
-        alarmService.newAlarm(alarmReq);
-    }
 }

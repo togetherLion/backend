@@ -1,6 +1,7 @@
 package CodeMaker.togetherLion.domain.alarm.service;
 
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
+import CodeMaker.togetherLion.domain.alarm.dto.AlarmRes;
 import CodeMaker.togetherLion.domain.alarm.entity.Alarm;
 import CodeMaker.togetherLion.domain.alarm.repository.AlarmRepository;
 import CodeMaker.togetherLion.domain.complain.service.ComplainService;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,4 +34,15 @@ public class AlarmService {
         return alarm;
     }
 
+    // 알림 목록
+    public List<AlarmRes> alarmList(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+        List<Alarm> alarms = alarmRepository.findByUserId(user);
+
+        return alarms.stream()
+                .map(AlarmRes::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
