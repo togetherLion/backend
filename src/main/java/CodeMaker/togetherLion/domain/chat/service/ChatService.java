@@ -6,6 +6,10 @@ import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
+import CodeMaker.togetherLion.domain.place.dto.PlaceDto;
+import CodeMaker.togetherLion.domain.place.dto.PlaceRes;
+import CodeMaker.togetherLion.domain.place.model.PlaceType;
+import CodeMaker.togetherLion.domain.place.repository.PlaceRepository;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -20,6 +24,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContexts;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,6 +43,10 @@ public class ChatService {
     private final UserRepository userRepository;
     private final WaitingDealRepository waitingDealRepository;
     private final AlarmService alarmService;
+    private final PlaceRepository placeRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
     @PostConstruct
@@ -120,4 +132,54 @@ public class ChatService {
         return userRepository.getAccount(userId);
     }
 
+    // 장소 추천
+    public List<PlaceDto> recommendPlace(int postId) {
+        List<Integer> userIdList = waitingDealRepository.findUserIdByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+        double sumLat = 0;
+        double sumLong = 0;
+        for(int userId : userIdList) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+            sumLat += Double.parseDouble(user.getUserLat());
+            sumLong += Double.parseDouble(user.getUserLong());
+        }
+
+        double avgLat = sumLat / userIdList.size();
+        double avgLong = sumLong / userIdList.size();
+
+//        String sql = "SELECT place_id, place_lat, place_long, place_type, place_name, region_id, " +
+//                "(6371 * ACOS(COS(RADIANS(:lat)) * COS(RADIANS(place_lat)) * COS(RADIANS(place_long) - RADIANS(:lon)) + SIN(RADIANS(:lat)) * SIN(RADIANS(place_lat)))) AS distance " +
+//                "FROM togetherlion.place ORDER BY distance LIMIT 5";
+//
+//        Query query = entityManager.createNativeQuery(sql, "place");
+//        query.setParameter("lat", avgLat);
+//        query.setParameter("lon", avgLong);
+//
+//        List<Object[]> results = query.getResultList();
+//        List<PlaceDto> dtos = new ArrayList<>();
+//        for (Object[] row : results) {
+//            dtos.add(new PlaceDto(
+//                    (int) row[0],    // placeId
+//                    (String) row[1],  // placeLat
+//                    (String) row[2],  // placeLong
+//                    (String) row[4],  // placeName
+//                    (String) row[3]  // placeType
+//            ));
+//        }
+//        return dtos;
+        List<Object[]> results = placeRepository.findPlacesNearby(avgLat, avgLong);
+        List<PlaceDto> places = new ArrayList<>();
+        for (Object[] result : results) {
+            places.add(new PlaceDto(
+                    (int) result[0], // placeId
+                    (String) result[1], // placeLat
+                    (String) result[2], // placeLong
+                    (String) result[4], // placeName
+                    (String) result[3], // placeType
+                    (Double) result[5] // distance
+            ));
+        }
+        return places;
+    }
 }

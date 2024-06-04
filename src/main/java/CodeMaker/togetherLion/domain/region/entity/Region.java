@@ -1,5 +1,6 @@
 package CodeMaker.togetherLion.domain.region.entity;
 
+import CodeMaker.togetherLion.domain.place.entity.Place;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import lombok.*;
 
@@ -31,4 +32,7 @@ public class Region {
 
     @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL)
+    private List<Place> places = new ArrayList<>();
 }

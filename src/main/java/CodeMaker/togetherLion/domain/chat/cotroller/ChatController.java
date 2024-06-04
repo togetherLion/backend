@@ -2,8 +2,9 @@ package CodeMaker.togetherLion.domain.chat.cotroller;
 
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.service.ChatService;
-import CodeMaker.togetherLion.domain.cheat.repository.CheatRepository;
 import CodeMaker.togetherLion.domain.cheat.service.CheatService;
+import CodeMaker.togetherLion.domain.place.dto.PlaceDto;
+import CodeMaker.togetherLion.domain.place.dto.PlaceRes;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -58,5 +58,12 @@ public class ChatController {
         params.put("account", chatService.sendAccount(userId));
         params.put("cheatMsg", cheatService.searchCheat(userId));
         return ResponseEntity.ok(params);
+    }
+
+    // 거래 장소 추천
+    @GetMapping("/recommend")
+    public ResponseEntity<List<PlaceDto>> recommendPlace(@RequestParam int postId) {
+        List<PlaceDto> list = chatService.recommendPlace(postId);
+        return ResponseEntity.ok(list);
     }
 }
