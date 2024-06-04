@@ -1,13 +1,11 @@
 package CodeMaker.togetherLion.domain.post.controller;
 
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
-import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
-import CodeMaker.togetherLion.domain.post.dto.GetPostDto;
-import CodeMaker.togetherLion.domain.post.dto.PostReq;
-import CodeMaker.togetherLion.domain.post.dto.PostRes;
+import CodeMaker.togetherLion.domain.post.dto.*;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
 import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
+import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.AllArgsConstructor;
@@ -31,6 +29,7 @@ public class PostController {
     private final SessionUtil sessionUtil;
     private final UserInfoService userInfoService;
 
+
     @PostMapping("")
     public ResponseEntity<PostRes> createPost(@RequestBody Post post, HttpServletRequest request) {
         Post createdPost = postService.createPost(post, request);
@@ -47,17 +46,17 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<Map<String, Object>> getPost(@PathVariable Integer postId) {
         try {
-            Post post = postService.getPost(postId);
-            PostRes postRes = PostRes.fromEntity(post);
-            UserRes userRes = UserRes.fromEntity(post.getUser());
+            PostResOnlyDate postResOnlyDate = postService.getPost(postId);
+            User user = userInfoService.findUserById(postResOnlyDate.userId()); // userId로 User 정보 조회
+            UserRes userRes = UserRes.fromEntity(user); // User 정보를 DTO로 변환
 
             Map<String, Object> response = new HashMap<>();
-            response.put("post", postRes);
+            response.put("post", postResOnlyDate);
             response.put("user", userRes);
 
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
-            log.error("Error while fetching post: {}", e.getMessage());
+            log.error("Error while fetching post or user: {}", e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }

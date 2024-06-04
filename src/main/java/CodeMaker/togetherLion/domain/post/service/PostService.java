@@ -5,10 +5,7 @@ import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
-import CodeMaker.togetherLion.domain.post.dto.DealStateDto;
-import CodeMaker.togetherLion.domain.post.dto.GetPostDto;
-import CodeMaker.togetherLion.domain.post.dto.PostReq;
-import CodeMaker.togetherLion.domain.post.dto.PostRes;
+import CodeMaker.togetherLion.domain.post.dto.*;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.FollowerListRes;
@@ -83,10 +80,22 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public Post getPost(Integer postId) {
+    public PostResOnlyDate getPost(Integer postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글 없음!"));
-        return post;
+
+        return new PostResOnlyDate(
+                post.getPostId(),
+                post.getProductName(),
+                post.getProductContent(),
+                post.getDealNum(),
+                post.getDeadlineDate().toLocalDate(), // LocalDate 타입이므로 변환 필요 없음
+                post.getDealState(),
+                post.getPrice(),
+                post.getUploadDate().toLocalDate(), // LocalDate 타입이므로 변환 필요 없음
+                post.getUser().getUserId(),
+                post.getPostPicture()
+        );
     }
 
     @Transactional
