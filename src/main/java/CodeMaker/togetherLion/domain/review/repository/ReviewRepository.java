@@ -5,10 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     @Query("SELECT r FROM Review r WHERE r.user.userId = :userId AND r.post.postId = :postId")
     Optional<Review> findByUserIdAndPostId(@Param("userId") int userId, @Param("postId") int postId);
+
+    List<Review> findByPost_PostIdIn(List<Integer> postIds);
+
 
 }

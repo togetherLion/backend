@@ -4,6 +4,7 @@ import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.review.dto.ReviewAlreadyExistsException;
 import CodeMaker.togetherLion.domain.review.dto.ReviewReq;
+import CodeMaker.togetherLion.domain.review.dto.ReviewRes;
 import CodeMaker.togetherLion.domain.review.entity.Review;
 import CodeMaker.togetherLion.domain.review.repository.ReviewRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -16,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +78,25 @@ public class ReviewService {
         Review review = reviewRepository.findByUserIdAndPostId(userId, postId)
                 .orElseThrow(() -> new NoSuchElementException("해당 리뷰를 찾을 수 없습니다."));
         reviewRepository.delete(review);
+    }
+
+    public List<ReviewRes> getReviewsByUserId(int userId) {
+        // 사용자 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 사용자가 작성한 모든 게시글의 ID 가져오기
+        List<Integer> postIds = postRepository.findByUser(user).stream()
+                .map(Post::getPostId)
+                .collect(Collectors.toList());
+
+        // 해당 게시글 ID들로 리뷰 조회
+        List<Review> reviews = reviewRepository.findByPost_PostIdIn(postIds);
+
+        // DTO로 변환하여 반환
+        return reviews.stream()
+                .map(ReviewRes::fromEntity)
+                .collect(Collectors.toList());
     }
 
 

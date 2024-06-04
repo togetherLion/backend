@@ -146,4 +146,14 @@ public class PostService {
         Optional<Post> postOptional = postRepository.findByPostId(postId);
         return postOptional.map(post -> new DealStateDto(post.getDealState(), post.getDealState().getMessage()));
     }
+
+    public List<PostRes> findPostsByUserIdFromPostId(int postId) {
+        // postId를 통해 Post를 찾습니다.
+        return postRepository.findByPostId(postId)
+                // Post가 존재하면 해당 Post의 userId를 가져옵니다.
+                .map(post -> post.getUser().getUserId())
+                // userId로 그 사용자가 작성한 모든 Post를 찾습니다.
+                .map(userId -> postRepository.findPostResByUserId(userId))
+                .orElseThrow(() -> new RuntimeException("Post not found with id " + postId));
+    }
 }

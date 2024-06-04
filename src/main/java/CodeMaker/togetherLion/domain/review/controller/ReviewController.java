@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -45,5 +46,11 @@ public class ReviewController {
         int userId = sessionUtil.getUserIdFromSession(request);
         reviewService.deleteReview(userId, postId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ReviewRes>> getReviewsByUserId(@PathVariable int userId) {
+        List<ReviewRes> reviews = reviewService.getReviewsByUserId(userId);
+        return ResponseEntity.ok(reviews);
     }
 }

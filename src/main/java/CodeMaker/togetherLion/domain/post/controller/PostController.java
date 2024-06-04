@@ -7,6 +7,7 @@ import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
+import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -43,11 +45,17 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostRes> getPost(@PathVariable Integer postId) {
+    public ResponseEntity<Map<String, Object>> getPost(@PathVariable Integer postId) {
         try {
             Post post = postService.getPost(postId);
             PostRes postRes = PostRes.fromEntity(post);
-            return ResponseEntity.ok(postRes);
+            UserRes userRes = UserRes.fromEntity(post.getUser());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("post", postRes);
+            response.put("user", userRes);
+
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             log.error("Error while fetching post: {}", e.getMessage());
             return ResponseEntity.notFound().build();
@@ -93,6 +101,12 @@ public class PostController {
         return postService.getPostDealStateByPostId(postId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // postId를 받아 해당 Post의 userId에 해당하는 모든 Post를 반환합니다.
+    @GetMapping("/user-posts/{postId}")
+    public List<PostRes> findPostsByUserIdFromPostId(@PathVariable int postId) {
+        return postService.findPostsByUserIdFromPostId(postId);
     }
 
 

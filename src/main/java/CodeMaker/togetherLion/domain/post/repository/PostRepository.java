@@ -2,6 +2,7 @@ package CodeMaker.togetherLion.domain.post.repository;
 
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
+import CodeMaker.togetherLion.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -100,5 +101,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
 
     Optional<Post> findByPostId(int postId);
+
+    List<Post> findByUser(User user);
 
 }
