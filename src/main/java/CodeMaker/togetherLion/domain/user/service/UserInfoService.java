@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -252,5 +253,11 @@ public class UserInfoService {
     // 동네 조회
     public String getTownName(int userId) {
         return userRepository.getUserTownName(userId);
+    }
+
+
+    public User findUserById(int userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다. userId: " + userId));
     }
 }
