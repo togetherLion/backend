@@ -56,7 +56,7 @@ public class PostController {
         try {
             int userId = sessionUtil.getUserIdFromSession(request);
             PostResOnlyDate postResOnlyDate = postService.getPost(postId);
-            User user = userInfoService.findUserById(userId); // userId로 User 정보 조회
+            User user = userInfoService.findUserById(postResOnlyDate.userId()); // userId로 User 정보 조회
             UserRes userRes = UserRes.fromEntity(user); // User 정보를 DTO로 변환
 
             Boolean isgood = goodService.isPostLikedByUser(request, postId);
