@@ -20,4 +20,7 @@ public interface GoodRepository extends JpaRepository<Good, Integer> {
 
     @Query("SELECT g.post FROM Good g WHERE g.user.userId = :userId AND g.likeCheck = true")
     List<Post> findLikedPostsByUserId(@Param("userId") int userId);
+
+    @Query("SELECT g.likeCheck FROM Good g WHERE g.post.postId = :postId AND g.user.userId = :userId")
+    Boolean findLikeCheckByPostIdAndUserId(@Param("userId")int userId, @Param("postId")int postId);
 }

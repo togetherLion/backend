@@ -4,16 +4,18 @@ import CodeMaker.togetherLion.domain.good.dto.GoodReq;
 import CodeMaker.togetherLion.domain.good.dto.GoodRes;
 import CodeMaker.togetherLion.domain.good.entity.Good;
 import CodeMaker.togetherLion.domain.good.repository.GoodRepository;
-import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
+import CodeMaker.togetherLion.domain.util.SessionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class GoodService {
     private final UserRepository userRepository;
     private final GoodRepository goodRepository;
     private final PostRepository postRepository;
+    private final SessionUtil sessionUtil;
 
     public GoodRes createGood(GoodReq goodReq) {
         User user = userRepository.findById(goodReq.userId())
@@ -64,6 +67,16 @@ public class GoodService {
         return goodRepository.findByUserIdAndPostId(userId, postId)
                 .map(Good::isLikeCheck)
                 .orElse(false);
+    }
+
+    public Optional<Good> getGoodByUserIdAndPostId(HttpServletRequest request, int postId) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return goodRepository.findByUserIdAndPostId(userId, postId);
+    }
+
+    public Boolean isPostLikedByUser(HttpServletRequest request, int postId) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return goodRepository.findLikeCheckByPostIdAndUserId(userId, postId);
     }
 
 }

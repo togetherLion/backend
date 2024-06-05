@@ -1,6 +1,9 @@
 package CodeMaker.togetherLion.domain.post.controller;
 
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
+import CodeMaker.togetherLion.domain.good.dto.GoodRes;
+import CodeMaker.togetherLion.domain.good.entity.Good;
+import CodeMaker.togetherLion.domain.good.service.GoodService;
 import CodeMaker.togetherLion.domain.post.dto.*;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.service.PostService;
@@ -8,6 +11,8 @@ import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.service.UserInfoService;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
+import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
+import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -28,6 +34,8 @@ public class PostController {
     private final PostService postService;
     private final SessionUtil sessionUtil;
     private final UserInfoService userInfoService;
+    private final GoodService goodService;
+    private final WaitingDealRepository waitingDealRepository;
 
 
     @PostMapping("")
@@ -44,15 +52,25 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Map<String, Object>> getPost(@PathVariable Integer postId) {
+    public ResponseEntity<Map<String, Object>> getPost(HttpServletRequest request,@PathVariable Integer postId) {
         try {
+            int userId = sessionUtil.getUserIdFromSession(request);
             PostResOnlyDate postResOnlyDate = postService.getPost(postId);
-            User user = userInfoService.findUserById(postResOnlyDate.userId()); // userId로 User 정보 조회
+            User user = userInfoService.findUserById(userId); // userId로 User 정보 조회
             UserRes userRes = UserRes.fromEntity(user); // User 정보를 DTO로 변환
+
+            Boolean isgood = goodService.isPostLikedByUser(request, postId);
+            isgood = (isgood != null) ? isgood : false;
+
+            int waitingDealsCount = waitingDealRepository.countByPostIdAndWaitingState(postId, WaitingState.ACCEPTED);
+
 
             Map<String, Object> response = new HashMap<>();
             response.put("post", postResOnlyDate);
             response.put("user", userRes);
+            response.put("isgood", isgood);
+            response.put("waitingDeals", waitingDealsCount);
+
 
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
