@@ -14,7 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 
     List<Review> findByPost_PostIdIn(List<Integer> postIds);
 
-    @Query("SELECT ROUND(AVG(r.starScore), 1) FROM Review r " +
+    @Query("SELECT COALESCE(ROUND(AVG(r.starScore), 1), 0) FROM Review r " +
             "INNER JOIN Post p ON p.postId = r.post.postId " +
             "WHERE p.user.userId = :userId")
     double getAvgStarScore(@Param("userId") int userId);
