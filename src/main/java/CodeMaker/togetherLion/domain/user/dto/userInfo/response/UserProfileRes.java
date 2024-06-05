@@ -20,4 +20,5 @@ public class UserProfileRes {
     private int followingCount;
     private String townName;
     private int complainCount;
+    private double avgStarScore;
 }

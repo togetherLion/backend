@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.user.service;
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.region.repository.RegionRepository;
+import CodeMaker.togetherLion.domain.review.repository.ReviewRepository;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.request.*;
 import CodeMaker.togetherLion.domain.user.dto.userInfo.response.*;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -23,6 +24,7 @@ public class UserInfoService {
     private final FollowRepository followRepository;
     private final LoginService loginService;
     private final RegionRepository regionRepository;
+    private final ReviewRepository reviewRepository;
 
 
     // 회원 정보 조회
@@ -196,6 +198,7 @@ public class UserInfoService {
                 .followingCount(followRepository.countFollowing(user))
                 .townName(userRepository.getUserTownName(user.getUserId()))
                 .complainCount(user.getComplainCount())
+                .avgStarScore(reviewRepository.getAvgStarScore(userProfileReq.getUserId()))
                 .build();
     }
 
