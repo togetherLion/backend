@@ -1,9 +1,7 @@
 package CodeMaker.togetherLion.domain.chat.entity;
 
 import CodeMaker.togetherLion.domain.post.entity.Post;
-import CodeMaker.togetherLion.domain.user.entity.User;
-import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
-import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
+import CodeMaker.togetherLion.domain.userchat.entity.UserChat;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,6 +29,10 @@ public class Chat {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
+    private List<UserChat> userChats = new ArrayList<>();
+
 
     @Builder
     public Chat(String roomId, String chatroomName, LocalDateTime createChatRoom, Post post) {

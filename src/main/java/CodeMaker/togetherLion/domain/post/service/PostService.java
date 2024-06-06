@@ -1,16 +1,15 @@
 package CodeMaker.togetherLion.domain.post.service;
 
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
-import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
 import CodeMaker.togetherLion.domain.follow.repository.FollowRepository;
 import CodeMaker.togetherLion.domain.post.dto.*;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
-import CodeMaker.togetherLion.domain.user.dto.userInfo.response.FollowerListRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
+import CodeMaker.togetherLion.domain.userchat.repository.UserChatRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
@@ -38,6 +37,7 @@ public class PostService {
     private final WaitingDealRepository waitingDealRepository;
     private final FollowRepository followRepository;
     private final AlarmService alarmService;
+
 
     public Post createPost(Post post, HttpServletRequest request) {
 

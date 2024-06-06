@@ -1,6 +1,8 @@
 package CodeMaker.togetherLion.domain.chat.cotroller;
 
+import CodeMaker.togetherLion.domain.chat.dto.ChatRes;
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
+import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.chat.service.ChatService;
 import CodeMaker.togetherLion.domain.cheat.service.CheatService;
 import CodeMaker.togetherLion.domain.place.dto.PlaceDto;
@@ -65,5 +67,11 @@ public class ChatController {
     public ResponseEntity<List<PlaceDto>> recommendPlace(@RequestParam int postId) {
         List<PlaceDto> list = chatService.recommendPlace(postId);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/my")
+    public List<ChatRes> getUserChats(HttpServletRequest request) {
+        int userId = sessionUtil.getUserIdFromSession(request);
+        return chatService.findChatsByUserId(userId);
     }
 }

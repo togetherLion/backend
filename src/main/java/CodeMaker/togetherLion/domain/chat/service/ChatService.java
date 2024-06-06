@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.chat.service;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmDto;
 import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
+import CodeMaker.togetherLion.domain.chat.dto.ChatRes;
 import CodeMaker.togetherLion.domain.chat.dto.ChatRoom;
 import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
@@ -14,6 +15,8 @@ import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
+import CodeMaker.togetherLion.domain.userchat.entity.UserChat;
+import CodeMaker.togetherLion.domain.userchat.repository.UserChatRepository;
 import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
 import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +34,7 @@ import javax.persistence.Query;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -44,6 +48,7 @@ public class ChatService {
     private final WaitingDealRepository waitingDealRepository;
     private final AlarmService alarmService;
     private final PlaceRepository placeRepository;
+    private final UserChatRepository userChatRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -181,5 +186,20 @@ public class ChatService {
             ));
         }
         return places;
+    }
+
+
+    public List<ChatRes> findChatsByUserId(int userId) {
+        // UserChat 엔티티를 통해 userId에 해당하는 chatId들을 찾음
+        List<UserChat> userChats = userChatRepository.findByUserId(userId);
+
+        // 찾은 chatId들을 이용하여 Chat 엔티티에서 동일한 ChatRoomId를 가진 Chat 객체들을 조회
+        return userChats.stream()
+                .map(userChat -> chatRepository.findById(userChat.getChat().getChatRoomId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted(Comparator.comparing(Chat::getCreateChatRoom).reversed()) // 최신 순으로 정렬
+                .map(ChatRes::from)
+                .collect(Collectors.toList());
     }
 }

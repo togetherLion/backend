@@ -1,19 +1,17 @@
 package CodeMaker.togetherLion.domain.user.entity;
 
 import CodeMaker.togetherLion.domain.alarm.entity.Alarm;
-import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.follow.entity.Follow;
 import CodeMaker.togetherLion.domain.good.entity.Good;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.region.entity.Region;
 import CodeMaker.togetherLion.domain.review.entity.Review;
+import CodeMaker.togetherLion.domain.userchat.entity.UserChat;
 import CodeMaker.togetherLion.domain.usersearch.entity.UserSearch;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +92,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Alarm> alarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserChat> userChats = new ArrayList<>();
+
 
     // 사용자를 팔로우하는 관계
     @OneToMany(mappedBy = "followedUser", cascade = CascadeType.ALL)

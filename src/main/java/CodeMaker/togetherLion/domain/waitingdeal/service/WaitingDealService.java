@@ -3,12 +3,15 @@ package CodeMaker.togetherLion.domain.waitingdeal.service;
 import CodeMaker.togetherLion.domain.alarm.dto.AlarmReq;
 import CodeMaker.togetherLion.domain.alarm.model.AlarmType;
 import CodeMaker.togetherLion.domain.alarm.service.AlarmService;
+import CodeMaker.togetherLion.domain.chat.entity.Chat;
 import CodeMaker.togetherLion.domain.chat.repository.ChatRepository;
 import CodeMaker.togetherLion.domain.post.entity.Post;
 import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
+import CodeMaker.togetherLion.domain.userchat.entity.UserChat;
+import CodeMaker.togetherLion.domain.userchat.repository.UserChatRepository;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealInfo;
 import CodeMaker.togetherLion.domain.waitingdeal.dto.WaitingDealReq;
@@ -20,7 +23,6 @@ import lombok.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -41,6 +43,7 @@ public class WaitingDealService {
     private final WaitingDealRepository waitingDealRepository;
     private final ChatRepository chatRepository;
     private final AlarmService alarmService;
+    private final UserChatRepository userChatRepository;
 
     public WaitingDeal createWaitingDeal(WaitingDealReq waitingDealReq, HttpServletRequest request) {
         int userId = sessionUtil.getUserIdFromSession(request);
@@ -108,6 +111,8 @@ public class WaitingDealService {
                     waitingDeal.update(WaitingState.ACCEPTED);
                     waitingDealRepository.save(waitingDeal);
 
+
+
                     // 참여 요청 수락 알림
                     String msg = "[" + post.getProductName() + "] 참여 요청이 수락되었습니다.";
                     AlarmReq alarmReq = new AlarmReq(msg, LocalDateTime.now(), false,
@@ -162,10 +167,30 @@ public class WaitingDealService {
                 int userId = sessionUtil.getUserIdFromSession(request);
 
                 // roomId와 userId를 Map에 저장
-                roomIdOptional.ifPresent(roomId -> result.put("roomId", roomId));
+                //roomIdOptional.ifPresent(roomId -> result.put("roomId", roomId));
+
+
+                roomIdOptional.ifPresent(roomId -> {
+                    Chat chat = chatRepository.findByRoomId(roomId);
+                    if (chat != null) {
+                        UserChat userChat = new UserChat();
+                        userChat.setChat(chat);
+                        User user = userRepository.findById(userId)
+                                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+                        userChat.setUser(user);
+
+                        userChatRepository.save(userChat);
+
+                        result.put("chatRoomId", chat.getChatRoomId());
+                        result.put("userId", userId);
+                    }
+                });
 
 
                 return result;
+
+
+
             } else {
                 result.put("message", "NO");
                 return result;

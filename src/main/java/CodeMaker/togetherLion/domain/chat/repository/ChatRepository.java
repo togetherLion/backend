@@ -12,5 +12,7 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     @Query("SELECT c.roomId FROM Chat c WHERE c.post.postId = :postId")
     Optional<String> findRoomIdByPost_PostId(@Param("postId") int postId);
 
+    @Query("SELECT c FROM Chat c WHERE c.roomId = :roomId")
+    Chat findByRoomId(@Param("roomId") String roomId);
 
 }
