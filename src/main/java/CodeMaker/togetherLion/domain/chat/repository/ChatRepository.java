@@ -11,4 +11,6 @@ public interface ChatRepository extends JpaRepository<Chat, Integer> {
     // post_id를 통해 해당 post_id의 단일 roomId를 찾는 메소드
     @Query("SELECT c.roomId FROM Chat c WHERE c.post.postId = :postId")
     Optional<String> findRoomIdByPost_PostId(@Param("postId") int postId);
+
+
 }

@@ -3,6 +3,7 @@ package CodeMaker.togetherLion.domain.waitingdeal.controller;
 import CodeMaker.togetherLion.domain.post.dto.PostReq;
 import CodeMaker.togetherLion.domain.post.dto.PostRes;
 import CodeMaker.togetherLion.domain.post.entity.Post;
+import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.post.service.PostService;
 import CodeMaker.togetherLion.domain.user.dto.waitingdeal.UserRes;
 import CodeMaker.togetherLion.domain.user.entity.User;
@@ -38,6 +39,7 @@ public class WaitingDealController {
     private final PostService postService;
     private final SessionUtil sessionUtil;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
 
     @PostMapping("")
@@ -86,15 +88,16 @@ public class WaitingDealController {
             int userId = sessionUtil.getUserIdFromSession(request);
             Map<String, Object> result = waitingDealService.canCreateChatRoom(postId, request);
 
-            // UserRepository를 사용하여 User 엔티티를 조회
-            Optional<User> userOptional = userRepository.findById(userId);
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                // UserRes 객체를 생성하여 결과 맵에 추가
-                UserRes userRes = UserRes.fromEntity(user);
-                result.put("user", userRes);
+
+            // PostRepository를 사용하여 Post 엔티티를 조회
+            Optional<Post> postOptional = postRepository.findByPostId(postId);
+            if (postOptional.isPresent()) {
+                Post post = postOptional.get();
+                // PostRes 객체를 생성하여 결과 맵에 추가
+                PostRes postRes = PostRes.fromEntity(post);
+                result.put("post", postRes);
             } else {
-                throw new EntityNotFoundException("User not found");
+                throw new EntityNotFoundException("Post not found");
             }
 
             return new ResponseEntity<>(result, HttpStatus.OK);
