@@ -70,12 +70,34 @@ public class SearchService {
 
     // 인기 검색어
     public List<String> bestSearch() {
-        return userSearchRepository.findBestSearch();
+        Pageable pageable = PageRequest.of(0, 10);
+        return userSearchRepository.findBestSearch(pageable);
     }
 
     // 조회 옵션 - 저가순
     public List<PostRes> searchPostLowCost(String searchText, int userId) {
         List<Post> posts = postRepository.searchPostLowCost(userId, searchText);
+
+        // 검색 기록 저장
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+        if(userSearchRepository.existsBySearchTextAndUser(searchText, user)) { // 중복되는 searchText 있으면 시간만 update
+            UserSearch userSearch = userSearchRepository.findBySearchTextAndUser(searchText, user)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 검색 기록입니다."));
+
+            userSearch.setSearchDate(LocalDateTime.now());
+            userSearchRepository.save(userSearch);
+        }
+        else{ // 아예 처음 검색
+            UserSearch userSearch2 = UserSearch.builder()
+                    .user(user)
+                    .searchDate(LocalDateTime.now())
+                    .searchText(searchText)
+                    .build();
+
+            userSearchRepository.save(userSearch2);
+        }
 
         return posts.stream()
                 .map(PostRes::fromEntity)
@@ -86,6 +108,27 @@ public class SearchService {
     public List<PostRes> searchPostHighCost(String searchText, int userId) {
         List<Post> posts = postRepository.searchPostHighCost(userId, searchText);
 
+        // 검색 기록 저장
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+        if(userSearchRepository.existsBySearchTextAndUser(searchText, user)) { // 중복되는 searchText 있으면 시간만 update
+            UserSearch userSearch = userSearchRepository.findBySearchTextAndUser(searchText, user)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 검색 기록입니다."));
+
+            userSearch.setSearchDate(LocalDateTime.now());
+            userSearchRepository.save(userSearch);
+        }
+        else{ // 아예 처음 검색
+            UserSearch userSearch2 = UserSearch.builder()
+                    .user(user)
+                    .searchDate(LocalDateTime.now())
+                    .searchText(searchText)
+                    .build();
+
+            userSearchRepository.save(userSearch2);
+        }
+
         return posts.stream()
                 .map(PostRes::fromEntity)
                 .collect(Collectors.toList());
@@ -94,6 +137,27 @@ public class SearchService {
     // 조회 옵션 - 가격대 설정
     public List<PostRes> searchPostPriceZone(String searchText, int lowPrice, int highPrice, int userId) {
         List<Post> posts = postRepository.searchPostPriceZone(userId, searchText, lowPrice, highPrice);
+
+        // 검색 기록 저장
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+        if(userSearchRepository.existsBySearchTextAndUser(searchText, user)) { // 중복되는 searchText 있으면 시간만 update
+            UserSearch userSearch = userSearchRepository.findBySearchTextAndUser(searchText, user)
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 검색 기록입니다."));
+
+            userSearch.setSearchDate(LocalDateTime.now());
+            userSearchRepository.save(userSearch);
+        }
+        else{ // 아예 처음 검색
+            UserSearch userSearch2 = UserSearch.builder()
+                    .user(user)
+                    .searchDate(LocalDateTime.now())
+                    .searchText(searchText)
+                    .build();
+
+            userSearchRepository.save(userSearch2);
+        }
 
         return posts.stream()
                 .map(PostRes::fromEntity)
