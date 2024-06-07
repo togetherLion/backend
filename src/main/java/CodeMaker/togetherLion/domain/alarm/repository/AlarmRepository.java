@@ -11,6 +11,7 @@ import java.util.List;
 public interface AlarmRepository extends JpaRepository<Alarm, Integer> {
 
     @Query("SELECT a FROM Alarm a " +
-            "WHERE a.user = :user")
+            "WHERE a.user = :user " +
+            "ORDER BY a.alarmDate DESC")
     List<Alarm> findByUserId(@Param("user") User user);
 }
