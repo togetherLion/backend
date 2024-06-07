@@ -193,11 +193,15 @@ public class ChatService {
         // UserChat 엔티티를 통해 userId에 해당하는 chatId들을 찾음
         List<UserChat> userChats = userChatRepository.findByUserId(userId);
 
+        // Set을 사용하여 중복된 ChatRoomId를 제거
+        Set<Integer> uniqueChatRoomIds = new HashSet<>();
+
         // 찾은 chatId들을 이용하여 Chat 엔티티에서 동일한 ChatRoomId를 가진 Chat 객체들을 조회
         return userChats.stream()
                 .map(userChat -> chatRepository.findById(userChat.getChat().getChatRoomId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(chat -> uniqueChatRoomIds.add(chat.getChatRoomId())) // 중복된 ChatRoomId 제거
                 .sorted(Comparator.comparing(Chat::getCreateChatRoom).reversed()) // 최신 순으로 정렬
                 .map(ChatRes::from)
                 .collect(Collectors.toList());

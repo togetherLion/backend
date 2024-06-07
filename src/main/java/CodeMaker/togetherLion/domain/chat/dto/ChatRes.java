@@ -12,12 +12,13 @@ public record ChatRes (
         String roomId,
         LocalDateTime createChatRoom,
         String chatroomName,
-        int userId
+        int userId,
+        int postId
         //PostRes postRes // 추가된 부분
 
 ){
 public static ChatRes from(Chat chat) {
-    return new ChatRes(chat.getChatRoomId(), chat.getRoomId(), chat.getCreateChatRoom(), chat.getChatroomName(), chat.getPost().getUser().getUserId());
+    return new ChatRes(chat.getChatRoomId(), chat.getRoomId(), chat.getCreateChatRoom(), chat.getChatroomName(), chat.getPost().getUser().getUserId(), chat.getPost().getPostId());
 }
 }
 
