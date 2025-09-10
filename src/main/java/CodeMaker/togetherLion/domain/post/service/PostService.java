@@ -10,16 +10,20 @@ import CodeMaker.togetherLion.domain.post.repository.PostRepository;
 import CodeMaker.togetherLion.domain.user.entity.User;
 import CodeMaker.togetherLion.domain.user.repository.UserRepository;
 import CodeMaker.togetherLion.domain.userchat.repository.UserChatRepository;
+import CodeMaker.togetherLion.domain.util.ImageUtil;
 import CodeMaker.togetherLion.domain.util.SessionUtil;
 import CodeMaker.togetherLion.domain.waitingdeal.entity.WaitingDeal;
 import CodeMaker.togetherLion.domain.waitingdeal.model.WaitingState;
 import CodeMaker.togetherLion.domain.waitingdeal.repository.WaitingDealRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +41,10 @@ public class PostService {
     private final WaitingDealRepository waitingDealRepository;
     private final FollowRepository followRepository;
     private final AlarmService alarmService;
+    private final ImageUtil imageUtil;
 
+    @Value("${watermark.base64.image}")
+    private String waterMarkBase64;
 
     public Post createPost(Post post, HttpServletRequest request) {
 
@@ -46,6 +53,16 @@ public class PostService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 userId입니다."));
+
+        // 워터마크 삽입
+        String originBase64 = post.getPostPicture();
+        try {
+            String watermarkedImage = imageUtil.addWatermarkToBase64Image(originBase64, waterMarkBase64);
+            post.setPostPicture(watermarkedImage);
+
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("워터마크 처리 중 에러 발생" + e.getMessage());
+        }
 
         post.setUser(user);
         post.setUploadDate(now);
