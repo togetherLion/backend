@@ -181,6 +181,7 @@ public class WaitingDealService {
 
                         userChatRepository.save(userChat);
 
+                        result.put("roomId", roomId);
                         result.put("chatRoomId", chat.getChatRoomId());
                         result.put("userId", userId);
                     }

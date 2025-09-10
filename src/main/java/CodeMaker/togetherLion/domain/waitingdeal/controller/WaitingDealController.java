@@ -81,25 +81,65 @@ public class WaitingDealController {
         return ResponseEntity.ok(userResponses);
     }
 
+//    @GetMapping("/check-chat-room/{postId}")
+//    public ResponseEntity<Map<String, Object>> checkChatRoomAvailability(@PathVariable int postId, HttpServletRequest request) {
+//        try {
+//            // 예시로, 세션에서 userId를 얻는 방법을 사용합니다.
+//            int userId = sessionUtil.getUserIdFromSession(request);
+//            Map<String, Object> result = waitingDealService.canCreateChatRoom(postId, request);
+//
+//
+//            // PostRepository를 사용하여 Post 엔티티를 조회
+//            Optional<Post> postOptional = postRepository.findByPostId(postId);
+//            if (postOptional.isPresent()) {
+//                Post post = postOptional.get();
+//                // PostRes 객체를 생성하여 결과 맵에 추가
+//                PostRes postRes = PostRes.fromEntity(post);
+//                result.put("post", postRes);
+//            } else {
+//                throw new EntityNotFoundException("Post not found");
+//            }
+//
+//            return new ResponseEntity<>(result, HttpStatus.OK);
+//        } catch (EntityNotFoundException e) {
+//            Map<String, Object> errorResponse = new HashMap<>();
+//            errorResponse.put("message", e.getMessage());
+//            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    // WaitingDealController.java
+
     @GetMapping("/check-chat-room/{postId}")
-    public ResponseEntity<Map<String, Object>> checkChatRoomAvailability(@PathVariable int postId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> checkChatRoomAvailability(
+            @PathVariable int postId, HttpServletRequest request) {
         try {
-            // 예시로, 세션에서 userId를 얻는 방법을 사용합니다.
-            int userId = sessionUtil.getUserIdFromSession(request);
-            Map<String, Object> result = waitingDealService.canCreateChatRoom(postId, request);
+            int userId = sessionUtil.getUserIdFromSession(request); // 세션 사용자 [12]
+            Map<String, Object> result = waitingDealService.canCreateChatRoom(postId, request); // roomId, userId 포함 [3]
 
-
-            // PostRepository를 사용하여 Post 엔티티를 조회
+            // Post 로드 및 PostRes 추가 (기존 로직 유지)
             Optional<Post> postOptional = postRepository.findByPostId(postId);
-            if (postOptional.isPresent()) {
-                Post post = postOptional.get();
-                // PostRes 객체를 생성하여 결과 맵에 추가
-                PostRes postRes = PostRes.fromEntity(post);
-                result.put("post", postRes);
-            } else {
+            if (postOptional.isEmpty()) {
                 throw new EntityNotFoundException("Post not found");
             }
+            PostRes postRes = PostRes.fromEntity(postOptional.get());
+            result.put("post", postRes);
 
+            // roomId가 있는 경우 사용자 정보(UserRes)와 함께 응답 포맷 구성
+            if (result.containsKey("roomId")) {
+                // roomId 키를 서비스에서 보장하도록 수정(아래 서비스 수정 참고) [3]
+                Integer uid = (Integer) result.getOrDefault("userId", userId);
+                User user = userRepository.findById(uid)
+                        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + uid));
+                UserRes userRes = UserRes.fromEntity(user);
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("user", userRes);
+                response.put("roomId", result.get("roomId")); // UUID 문자열 [3]
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+            // 조건 미충족 시 그대로 반환 (예: { "message":"NO", "post":... })
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -107,6 +147,7 @@ public class WaitingDealController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
     }
+
 
     @GetMapping("/accepted-users")
     public List<UserRes> getAcceptedUsersByPostId(@RequestParam int postId) {
